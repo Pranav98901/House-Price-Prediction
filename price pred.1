@@ -1,0 +1,3853 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "3b010262",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib\n",
+    "from matplotlib import pyplot as plt\n",
+    "%matplotlib inline\n",
+    "matplotlib.rcParams[\"figure.figsize\"] = (20,10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "9792af16",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>area_type</th>\n",
+       "      <th>availability</th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>society</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>balcony</th>\n",
+       "      <th>price</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Super built-up  Area</td>\n",
+       "      <td>19-Dec</td>\n",
+       "      <td>Electronic City Phase II</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>Coomee</td>\n",
+       "      <td>1056</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>39.07</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Plot  Area</td>\n",
+       "      <td>Ready To Move</td>\n",
+       "      <td>Chikka Tirupathi</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>Theanmp</td>\n",
+       "      <td>2600</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>120.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Built-up  Area</td>\n",
+       "      <td>Ready To Move</td>\n",
+       "      <td>Uttarahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1440</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>62.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Super built-up  Area</td>\n",
+       "      <td>Ready To Move</td>\n",
+       "      <td>Lingadheeranahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>Soiewre</td>\n",
+       "      <td>1521</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>95.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Super built-up  Area</td>\n",
+       "      <td>Ready To Move</td>\n",
+       "      <td>Kothanur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>1200</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>51.00</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              area_type   availability                  location       size  \\\n",
+       "0  Super built-up  Area         19-Dec  Electronic City Phase II      2 BHK   \n",
+       "1            Plot  Area  Ready To Move          Chikka Tirupathi  4 Bedroom   \n",
+       "2        Built-up  Area  Ready To Move               Uttarahalli      3 BHK   \n",
+       "3  Super built-up  Area  Ready To Move        Lingadheeranahalli      3 BHK   \n",
+       "4  Super built-up  Area  Ready To Move                  Kothanur      2 BHK   \n",
+       "\n",
+       "   society total_sqft  bath  balcony   price  \n",
+       "0  Coomee        1056   2.0      1.0   39.07  \n",
+       "1  Theanmp       2600   5.0      3.0  120.00  \n",
+       "2      NaN       1440   2.0      3.0   62.00  \n",
+       "3  Soiewre       1521   3.0      1.0   95.00  \n",
+       "4      NaN       1200   2.0      1.0   51.00  "
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.read_csv(\"Bengaluru_House_Data.csv\")\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "49b891ee",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(13320, 9)"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "8c764991",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "area_type\n",
+       "Built-up  Area          2418\n",
+       "Carpet  Area              87\n",
+       "Plot  Area              2025\n",
+       "Super built-up  Area    8790\n",
+       "Name: area_type, dtype: int64"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.groupby('area_type')['area_type'].agg('count')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "03279d88",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Electronic City Phase II</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1056</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>39.07</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Chikka Tirupathi</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>2600</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>120.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Uttarahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1440</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>62.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Lingadheeranahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1521</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>95.00</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Kothanur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1200</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>51.00</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                   location       size total_sqft  bath   price\n",
+       "0  Electronic City Phase II      2 BHK       1056   2.0   39.07\n",
+       "1          Chikka Tirupathi  4 Bedroom       2600   5.0  120.00\n",
+       "2               Uttarahalli      3 BHK       1440   2.0   62.00\n",
+       "3        Lingadheeranahalli      3 BHK       1521   3.0   95.00\n",
+       "4                  Kothanur      2 BHK       1200   2.0   51.00"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df1 = df.drop(['availability','society','area_type','balcony'], axis = 'columns')\n",
+    "df1.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "6c79dea9",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "location       1\n",
+       "size          16\n",
+       "total_sqft     0\n",
+       "bath          73\n",
+       "price          0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# start data cleaning from here(1st step of end to end project)\n",
+    "#check the null values\n",
+    "df1.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "398e82b4",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "location      0\n",
+       "size          0\n",
+       "total_sqft    0\n",
+       "bath          0\n",
+       "price         0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#drop the null values \n",
+    "df2 = df1.dropna()\n",
+    "df2.isnull().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "76744c74",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(13246, 5)"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df2.shape\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "e792c3a9",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array(['2 BHK', '4 Bedroom', '3 BHK', '4 BHK', '6 Bedroom', '3 Bedroom',\n",
+       "       '1 BHK', '1 RK', '1 Bedroom', '8 Bedroom', '2 Bedroom',\n",
+       "       '7 Bedroom', '5 BHK', '7 BHK', '6 BHK', '5 Bedroom', '11 BHK',\n",
+       "       '9 BHK', '9 Bedroom', '27 BHK', '10 Bedroom', '11 Bedroom',\n",
+       "       '10 BHK', '19 BHK', '16 BHK', '43 Bedroom', '14 BHK', '8 BHK',\n",
+       "       '12 Bedroom', '13 BHK', '18 Bedroom'], dtype=object)"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#unique fuction finds the unique array and returns as the sorted array. \n",
+    "df2['size'].unique()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "c2c169aa",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\prana\\AppData\\Local\\Temp\\ipykernel_5752\\540392914.py:2: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  df2['bhk'] = df2['size'].apply(lambda x: int(x.split(' ')[0]))\n"
+     ]
+    }
+   ],
+   "source": [
+    "# where 4 bedrooms and 4bhk is the same value thats why we want to do this.\n",
+    "df2['bhk'] = df2['size'].apply(lambda x: int(x.split(' ')[0]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "c1489e47",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Electronic City Phase II</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1056</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>39.07</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Chikka Tirupathi</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>2600</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>120.00</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Uttarahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1440</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>62.00</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Lingadheeranahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1521</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>95.00</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Kothanur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1200</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>51.00</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                   location       size total_sqft  bath   price  bhk\n",
+       "0  Electronic City Phase II      2 BHK       1056   2.0   39.07    2\n",
+       "1          Chikka Tirupathi  4 Bedroom       2600   5.0  120.00    4\n",
+       "2               Uttarahalli      3 BHK       1440   2.0   62.00    3\n",
+       "3        Lingadheeranahalli      3 BHK       1521   3.0   95.00    3\n",
+       "4                  Kothanur      2 BHK       1200   2.0   51.00    2"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df2.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "7bcedf2c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([ 2,  4,  3,  6,  1,  8,  7,  5, 11,  9, 27, 10, 19, 16, 43, 14, 12,\n",
+       "       13, 18], dtype=int64)"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# just to check the data\n",
+    "df2['bhk'].unique()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "c7ed10ea",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>1718</th>\n",
+       "      <td>2Electronic City Phase II</td>\n",
+       "      <td>27 BHK</td>\n",
+       "      <td>8000</td>\n",
+       "      <td>27.0</td>\n",
+       "      <td>230.0</td>\n",
+       "      <td>27</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4684</th>\n",
+       "      <td>Munnekollal</td>\n",
+       "      <td>43 Bedroom</td>\n",
+       "      <td>2400</td>\n",
+       "      <td>40.0</td>\n",
+       "      <td>660.0</td>\n",
+       "      <td>43</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                       location        size total_sqft  bath  price  bhk\n",
+       "1718  2Electronic City Phase II      27 BHK       8000  27.0  230.0   27\n",
+       "4684                Munnekollal  43 Bedroom       2400  40.0  660.0   43"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# to check which house contains more than 20 bedrooms.\n",
+    "df2[df2.bhk>20]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "0d75292e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array(['1056', '2600', '1440', ..., '1133 - 1384', '774', '4689'],\n",
+       "      dtype=object)"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df2['total_sqft'].unique()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "725254c5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# to remove the problem of above range type values \n",
+    "def is_float(x):\n",
+    "    try:\n",
+    "        float(x)\n",
+    "    except:\n",
+    "        return False\n",
+    "    return True"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "c17861df",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>30</th>\n",
+       "      <td>Yelahanka</td>\n",
+       "      <td>4 BHK</td>\n",
+       "      <td>2100 - 2850</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>186.000</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>122</th>\n",
+       "      <td>Hebbal</td>\n",
+       "      <td>4 BHK</td>\n",
+       "      <td>3067 - 8156</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>477.000</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>137</th>\n",
+       "      <td>8th Phase JP Nagar</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1042 - 1105</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>54.005</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>165</th>\n",
+       "      <td>Sarjapur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1145 - 1340</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>43.490</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>188</th>\n",
+       "      <td>KR Puram</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1015 - 1540</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>56.800</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>410</th>\n",
+       "      <td>Kengeri</td>\n",
+       "      <td>1 BHK</td>\n",
+       "      <td>34.46Sq. Meter</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>18.500</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>549</th>\n",
+       "      <td>Hennur Road</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1195 - 1440</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>63.770</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>648</th>\n",
+       "      <td>Arekere</td>\n",
+       "      <td>9 Bedroom</td>\n",
+       "      <td>4125Perch</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>265.000</td>\n",
+       "      <td>9</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>661</th>\n",
+       "      <td>Yelahanka</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1120 - 1145</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>48.130</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>672</th>\n",
+       "      <td>Bettahalsoor</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>3090 - 5002</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>445.000</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "               location       size      total_sqft  bath    price  bhk\n",
+       "30            Yelahanka      4 BHK     2100 - 2850   4.0  186.000    4\n",
+       "122              Hebbal      4 BHK     3067 - 8156   4.0  477.000    4\n",
+       "137  8th Phase JP Nagar      2 BHK     1042 - 1105   2.0   54.005    2\n",
+       "165            Sarjapur      2 BHK     1145 - 1340   2.0   43.490    2\n",
+       "188            KR Puram      2 BHK     1015 - 1540   2.0   56.800    2\n",
+       "410             Kengeri      1 BHK  34.46Sq. Meter   1.0   18.500    1\n",
+       "549         Hennur Road      2 BHK     1195 - 1440   2.0   63.770    2\n",
+       "648             Arekere  9 Bedroom       4125Perch   9.0  265.000    9\n",
+       "661           Yelahanka      2 BHK     1120 - 1145   2.0   48.130    2\n",
+       "672        Bettahalsoor  4 Bedroom     3090 - 5002   4.0  445.000    4"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#(~)this operator gives the data frame back to user(haed is just for display 5 clmns without head it will retrn whole datfrm)\n",
+    "df2[~df2['total_sqft'].apply(is_float)].head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "c4c08ea4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#again we have to do the data cleaning process for sq.ft cloumn due to some uneven outputs and we have to convert the range in to avg.\n",
+    "# so we define a fuction to return the avg of the range and ignore the unique results \n",
+    "def convert_sqft_to_num(x):\n",
+    "    tokens= x.split('-')\n",
+    "    if len(tokens) == 2:\n",
+    "        return (float(tokens[0])+ float(tokens[1]))/2\n",
+    "    try:\n",
+    "        return float(x)\n",
+    "    except:\n",
+    "        return None"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "2ce93a30",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#just to check the fuction is working or not \n",
+    "convert_sqft_to_num('34.46Sq. Meter')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "e53633fa",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Electronic City Phase II</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1056.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>39.07</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Chikka Tirupathi</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>2600.0</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>120.00</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Uttarahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1440.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>62.00</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Lingadheeranahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1521.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>95.00</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Kothanur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>51.00</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                   location       size  total_sqft  bath   price  bhk\n",
+       "0  Electronic City Phase II      2 BHK      1056.0   2.0   39.07    2\n",
+       "1          Chikka Tirupathi  4 Bedroom      2600.0   5.0  120.00    4\n",
+       "2               Uttarahalli      3 BHK      1440.0   2.0   62.00    3\n",
+       "3        Lingadheeranahalli      3 BHK      1521.0   3.0   95.00    3\n",
+       "4                  Kothanur      2 BHK      1200.0   2.0   51.00    2"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# make a copy of current data set and apply this fuction to this data set \n",
+    "df3 = df2.copy()\n",
+    "df3['total_sqft'] = df3['total_sqft'].apply(convert_sqft_to_num)\n",
+    "df3.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "id": "0d7bea1b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "location      Yelahanka\n",
+       "size              4 BHK\n",
+       "total_sqft       2475.0\n",
+       "bath                4.0\n",
+       "price             186.0\n",
+       "bhk                   4\n",
+       "Name: 30, dtype: object"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#just to check the location details\n",
+    "df3.loc[30]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "id": "e01a0bcf",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>price_per_sqft</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Electronic City Phase II</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1056.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>39.07</td>\n",
+       "      <td>2</td>\n",
+       "      <td>3699.810606</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Chikka Tirupathi</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>2600.0</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>120.00</td>\n",
+       "      <td>4</td>\n",
+       "      <td>4615.384615</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Uttarahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1440.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>62.00</td>\n",
+       "      <td>3</td>\n",
+       "      <td>4305.555556</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Lingadheeranahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1521.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>95.00</td>\n",
+       "      <td>3</td>\n",
+       "      <td>6245.890861</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Kothanur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>51.00</td>\n",
+       "      <td>2</td>\n",
+       "      <td>4250.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                   location       size  total_sqft  bath   price  bhk  \\\n",
+       "0  Electronic City Phase II      2 BHK      1056.0   2.0   39.07    2   \n",
+       "1          Chikka Tirupathi  4 Bedroom      2600.0   5.0  120.00    4   \n",
+       "2               Uttarahalli      3 BHK      1440.0   2.0   62.00    3   \n",
+       "3        Lingadheeranahalli      3 BHK      1521.0   3.0   95.00    3   \n",
+       "4                  Kothanur      2 BHK      1200.0   2.0   51.00    2   \n",
+       "\n",
+       "   price_per_sqft  \n",
+       "0     3699.810606  \n",
+       "1     4615.384615  \n",
+       "2     4305.555556  \n",
+       "3     6245.890861  \n",
+       "4     4250.000000  "
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# lets start some feature engineering (we willl find the price per sq.ft)\n",
+    "#its very simple just have to divide the price by sq.ft\n",
+    "df4 = df3.copy()\n",
+    "df4['price_per_sqft'] = df3['price']*100000/df3['total_sqft']\n",
+    "df4.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "id": "05f64fd9",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1304"
+      ]
+     },
+     "execution_count": 24,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#check the count of locations\n",
+    "len(df4.location.unique())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "id": "c38c6f3e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "location\n",
+       "Whitefield               535\n",
+       "Sarjapur  Road           392\n",
+       "Electronic City          304\n",
+       "Kanakpura Road           266\n",
+       "Thanisandra              236\n",
+       "                        ... \n",
+       "1 Giri Nagar               1\n",
+       "Kanakapura Road,           1\n",
+       "Kanakapura main  Road      1\n",
+       "Karnataka Shabarimala      1\n",
+       "whitefiled                 1\n",
+       "Name: location, Length: 1293, dtype: int64"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#from above results we can conclude that there is high dimentionality for locations\n",
+    "#lets check how many data points are available for location\n",
+    "# strip fuction is use to remove the whitespaces or specific characters from the string at the beginning and end of the string.\n",
+    "#we sort the values in descending order (we write the code for that in 2nd row)\n",
+    "df4.location = df4.location.apply(lambda x: x.strip())\n",
+    "location_stats = df4.groupby('location')['location'].agg('count').sort_values(ascending=False)\n",
+    "location_stats"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "id": "8ad29e0b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1052"
+      ]
+     },
+     "execution_count": 26,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#which locations have less than 10 data points have to be converted in others. \n",
+    "len(location_stats[location_stats<=10])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "id": "d8255630",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "location\n",
+       "Basapura                 10\n",
+       "1st Block Koramangala    10\n",
+       "Gunjur Palya             10\n",
+       "Kalkere                  10\n",
+       "Sector 1 HSR Layout      10\n",
+       "                         ..\n",
+       "1 Giri Nagar              1\n",
+       "Kanakapura Road,          1\n",
+       "Kanakapura main  Road     1\n",
+       "Karnataka Shabarimala     1\n",
+       "whitefiled                1\n",
+       "Name: location, Length: 1052, dtype: int64"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "location_stats_less_than_10 = (location_stats[location_stats<=10])\n",
+    "location_stats_less_than_10"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "4c0a76b8",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1293"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "len(df4.location.unique())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "d1eb8bff",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "242"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#which locations have less than 10 data points have to be converted in others.\n",
+    "#check how many locations are availble after converting into the other \n",
+    "df4.location = df4.location.apply(lambda x: 'other' if x in location_stats_less_than_10 else x)\n",
+    "len(df4.location.unique())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "id": "a595c727",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>price_per_sqft</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Electronic City Phase II</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1056.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>39.07</td>\n",
+       "      <td>2</td>\n",
+       "      <td>3699.810606</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Chikka Tirupathi</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>2600.0</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>120.00</td>\n",
+       "      <td>4</td>\n",
+       "      <td>4615.384615</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Uttarahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1440.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>62.00</td>\n",
+       "      <td>3</td>\n",
+       "      <td>4305.555556</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Lingadheeranahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1521.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>95.00</td>\n",
+       "      <td>3</td>\n",
+       "      <td>6245.890861</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Kothanur</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>51.00</td>\n",
+       "      <td>2</td>\n",
+       "      <td>4250.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>Whitefield</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>1170.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>38.00</td>\n",
+       "      <td>2</td>\n",
+       "      <td>3247.863248</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>Old Airport Road</td>\n",
+       "      <td>4 BHK</td>\n",
+       "      <td>2732.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>204.00</td>\n",
+       "      <td>4</td>\n",
+       "      <td>7467.057101</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>Rajaji Nagar</td>\n",
+       "      <td>4 BHK</td>\n",
+       "      <td>3300.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>600.00</td>\n",
+       "      <td>4</td>\n",
+       "      <td>18181.818182</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>Marathahalli</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1310.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>63.25</td>\n",
+       "      <td>3</td>\n",
+       "      <td>4828.244275</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>other</td>\n",
+       "      <td>6 Bedroom</td>\n",
+       "      <td>1020.0</td>\n",
+       "      <td>6.0</td>\n",
+       "      <td>370.00</td>\n",
+       "      <td>6</td>\n",
+       "      <td>36274.509804</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                   location       size  total_sqft  bath   price  bhk  \\\n",
+       "0  Electronic City Phase II      2 BHK      1056.0   2.0   39.07    2   \n",
+       "1          Chikka Tirupathi  4 Bedroom      2600.0   5.0  120.00    4   \n",
+       "2               Uttarahalli      3 BHK      1440.0   2.0   62.00    3   \n",
+       "3        Lingadheeranahalli      3 BHK      1521.0   3.0   95.00    3   \n",
+       "4                  Kothanur      2 BHK      1200.0   2.0   51.00    2   \n",
+       "5                Whitefield      2 BHK      1170.0   2.0   38.00    2   \n",
+       "6          Old Airport Road      4 BHK      2732.0   4.0  204.00    4   \n",
+       "7              Rajaji Nagar      4 BHK      3300.0   4.0  600.00    4   \n",
+       "8              Marathahalli      3 BHK      1310.0   3.0   63.25    3   \n",
+       "9                     other  6 Bedroom      1020.0   6.0  370.00    6   \n",
+       "\n",
+       "   price_per_sqft  \n",
+       "0     3699.810606  \n",
+       "1     4615.384615  \n",
+       "2     4305.555556  \n",
+       "3     6245.890861  \n",
+       "4     4250.000000  \n",
+       "5     3247.863248  \n",
+       "6     7467.057101  \n",
+       "7    18181.818182  \n",
+       "8     4828.244275  \n",
+       "9    36274.509804  "
+      ]
+     },
+     "execution_count": 30,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df4.head(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "id": "441fdf9c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>price_per_sqft</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>other</td>\n",
+       "      <td>6 Bedroom</td>\n",
+       "      <td>1020.0</td>\n",
+       "      <td>6.0</td>\n",
+       "      <td>370.0</td>\n",
+       "      <td>6</td>\n",
+       "      <td>36274.509804</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>45</th>\n",
+       "      <td>HSR Layout</td>\n",
+       "      <td>8 Bedroom</td>\n",
+       "      <td>600.0</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>200.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>33333.333333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>58</th>\n",
+       "      <td>Murugeshpalya</td>\n",
+       "      <td>6 Bedroom</td>\n",
+       "      <td>1407.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>6</td>\n",
+       "      <td>10660.980810</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>68</th>\n",
+       "      <td>Devarachikkanahalli</td>\n",
+       "      <td>8 Bedroom</td>\n",
+       "      <td>1350.0</td>\n",
+       "      <td>7.0</td>\n",
+       "      <td>85.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>6296.296296</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>70</th>\n",
+       "      <td>other</td>\n",
+       "      <td>3 Bedroom</td>\n",
+       "      <td>500.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>100.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>20000.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>78</th>\n",
+       "      <td>Kaval Byrasandra</td>\n",
+       "      <td>2 BHK</td>\n",
+       "      <td>460.0</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>22.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>4782.608696</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>89</th>\n",
+       "      <td>Rajaji Nagar</td>\n",
+       "      <td>6 Bedroom</td>\n",
+       "      <td>710.0</td>\n",
+       "      <td>6.0</td>\n",
+       "      <td>160.0</td>\n",
+       "      <td>6</td>\n",
+       "      <td>22535.211268</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>119</th>\n",
+       "      <td>Hennur Road</td>\n",
+       "      <td>2 Bedroom</td>\n",
+       "      <td>276.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>23.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>8333.333333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>129</th>\n",
+       "      <td>Vishwapriya Layout</td>\n",
+       "      <td>7 Bedroom</td>\n",
+       "      <td>950.0</td>\n",
+       "      <td>7.0</td>\n",
+       "      <td>115.0</td>\n",
+       "      <td>7</td>\n",
+       "      <td>12105.263158</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>149</th>\n",
+       "      <td>other</td>\n",
+       "      <td>6 Bedroom</td>\n",
+       "      <td>1034.0</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>185.0</td>\n",
+       "      <td>6</td>\n",
+       "      <td>17891.682785</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>170</th>\n",
+       "      <td>other</td>\n",
+       "      <td>6 BHK</td>\n",
+       "      <td>1300.0</td>\n",
+       "      <td>6.0</td>\n",
+       "      <td>99.0</td>\n",
+       "      <td>6</td>\n",
+       "      <td>7615.384615</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                location       size  total_sqft  bath  price  bhk  \\\n",
+       "9                  other  6 Bedroom      1020.0   6.0  370.0    6   \n",
+       "45            HSR Layout  8 Bedroom       600.0   9.0  200.0    8   \n",
+       "58         Murugeshpalya  6 Bedroom      1407.0   4.0  150.0    6   \n",
+       "68   Devarachikkanahalli  8 Bedroom      1350.0   7.0   85.0    8   \n",
+       "70                 other  3 Bedroom       500.0   3.0  100.0    3   \n",
+       "78      Kaval Byrasandra      2 BHK       460.0   1.0   22.0    2   \n",
+       "89          Rajaji Nagar  6 Bedroom       710.0   6.0  160.0    6   \n",
+       "119          Hennur Road  2 Bedroom       276.0   3.0   23.0    2   \n",
+       "129   Vishwapriya Layout  7 Bedroom       950.0   7.0  115.0    7   \n",
+       "149                other  6 Bedroom      1034.0   5.0  185.0    6   \n",
+       "170                other      6 BHK      1300.0   6.0   99.0    6   \n",
+       "\n",
+       "     price_per_sqft  \n",
+       "9      36274.509804  \n",
+       "45     33333.333333  \n",
+       "58     10660.980810  \n",
+       "68      6296.296296  \n",
+       "70     20000.000000  \n",
+       "78      4782.608696  \n",
+       "89     22535.211268  \n",
+       "119     8333.333333  \n",
+       "129    12105.263158  \n",
+       "149    17891.682785  \n",
+       "170     7615.384615  "
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#outlier detection \n",
+    "# to check the uneven house size or wrong house size.\n",
+    "df4[df4.total_sqft/df4.bhk<300].head(11)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "id": "85d7e276",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(13246, 7)"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df4.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "id": "0487f3f7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(12502, 7)"
+      ]
+     },
+     "execution_count": 33,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df5 = df4[~(df4.total_sqft/df4.bhk<300)]\n",
+    "df5.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "id": "0da85e71",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "count     12456.000000\n",
+       "mean       6308.502826\n",
+       "std        4168.127339\n",
+       "min         267.829813\n",
+       "25%        4210.526316\n",
+       "50%        5294.117647\n",
+       "75%        6916.666667\n",
+       "max      176470.588235\n",
+       "Name: price_per_sqft, dtype: float64"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df5.price_per_sqft.describe()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "id": "2ab527f9",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(10241, 7)"
+      ]
+     },
+     "execution_count": 35,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#raking data frame as a input and gouping the location at first.\n",
+    "#to remove the outliers find mean and standard deviation\n",
+    "def remove_pps_outliers(df):\n",
+    "    df_out = pd.DataFrame()\n",
+    "    for key, subdf in df.groupby('location'):\n",
+    "        m = np.mean(subdf.price_per_sqft)\n",
+    "        sd = np.std(subdf.price_per_sqft)\n",
+    "        reduced_df = subdf[(subdf.price_per_sqft>(m-sd)) & (subdf.price_per_sqft<=(m+sd))]\n",
+    "        df_out = pd.concat([df_out,reduced_df],ignore_index=True)\n",
+    "    return df_out\n",
+    "df6 =remove_pps_outliers(df5)\n",
+    "df6.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "id": "33f25e26",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAA3sAAAJcCAYAAABAE73ZAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMSwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/YYfK9AAAACXBIWXMAAAsTAAALEwEAmpwYAABCu0lEQVR4nO3df5xfd10n+tcnU2xrJgpCm9S0S7tkQguISTtAvBt3qysXTHKJom5Ym0Wvvde9m3gVqgjs6hV8yL2uwKp79+G6QmJQMxq84SLJIyLhl24Tac0vFKxswqVKSBO6uK6TQMs087l/nG+aSZimk2S+8/1+zzyfj8c8Pud8Puf7nffMYdLvi885n1NqrQEAAKBdFvS6AAAAAGafsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAPNGKeWeUsqHZnjsvy6lvLuz/Q9KKadLKUPdrRAAZk/xnD0ABkkp5eEki5OcTXI6yQeT/Fit9XSPa7o+yT+stZ7p9P0vSTbWWu/uVV0AzG9m9gAYRP9TrXU4yYokK5O8ubflJEmuSfITvS6ilHJNr2sAoD8IewAMrFrrySR/lCb0JUlKKW8qpXy2lDJeSvnLUsr3Thn74VLK/VP2f7WU8vlSyt+XUg6WUr59ythbSim/09m+tZRSnyZIvT3JT5VSnjnd4NN8r+tLKe8ppfy3UspDpZSfLqUcv4yfaV8p5ZdLKX+b5C0z+d0B0H7CHgADq5Ryc5LvTnJsSvdnk3x7km9M8tYkv1NKuekp3uLP0gTFb0oyluT3SynXXWE5B5J8PMlPXcH3+rkktyb5h0lenmTjRa99up/pZUn+vyQ3JnnbFdYPQMsIewAMoveXUsaTfD7JF9OEpSRJrfX3a60naq2TtdYdSY4meel0b1Jr/Z1a65dqrU/UWt+Z5Nokz7+Kuv6PJP97KeWGy/xe/yzJ/1lr/W+11uNJ/v1Fr326n+lErfX/7rz3V66ifgBaRNgDYBB9T611UZK7k9ye5DnnBkopry2lHCml/F0p5e+SvGjq+FSllJ/sXDb53zvHfuNTHTsTtdZPJdmd5E2X+b2+OU1wPefzF7326X6mC44HgETYA2CA1Vr/OMm2JO9IklLKc5O8K8mPJXl2rfWZST6VpFz82s49c29MM6v2rM6x/326Yy/TzyX5X5MsvYzv9UiSm6e8xy1TXjuTn8nS2gB8DWEPgEH3K0leXkpZkWRhmuDzaJKUUv7nNLNg01mU5InOsdeUUv6PJN9wtcXUWo8l2ZHkxy/je703yZtLKc8qpSxNE+zOuZyfCQCeJOwBMNBqrY8m+a0kP1tr/csk70zyp0lOJfmWJPue4qV/lOQPk/yXJH+d5LHM3uWQP58mpM30e/18kuNJPpfkw0n+nySPJ8ll/kwA8CQPVQdg3iil/EiaB51/5wyO/fkkN9daf6T7lX3N9/5XSV5Ta/0nc/29AWgPM3sAzCcvTDN7dkmllJLkBTM5djaUUm4qpfyjUsqCUsrzk/xkkv93Lr43AO11qYfDAkBrlFLen2QkyQ/M4PBDaS6j/LGnO3CWfF2S/5TktiR/l+T3kvzaHH1vAFrKZZwAAAAt5DJOAACAFhroyzif85zn1FtvvbXXZQAAAPTEwYMH/2ut9YbpxgY67N166605cOBAr8sAAADoiVLKXz/VmMs4AQAAWkjYAwAAaCFhDwAAoIUG+p696UxMTOT48eN57LHHel3KnLvuuuty88035xnPeEavSwEAAHqsdWHv+PHjWbRoUW699daUUnpdzpypteZLX/pSjh8/nttuu63X5QAAAD3Wuss4H3vssTz72c+eV0EvSUopefaznz0vZzQBAICv1bqwl2TeBb1z5uvPDQAAfK1Whj0AAID5Ttjrgs9//vP5ju/4jtxxxx154QtfmF/91V9NkvzwD/9wbrvttqxYsSK333573vrWtz75mrvvvvuCB8Q//PDDedGLXpQk+fjHP55169Y9OfYzP/MzecUrXpHHH398jn4iAABg0LRugZbLNT6e7NiRHD2ajIwkGzYkixZd3Xtec801eec735k777wz4+Pjueuuu/Lyl788SfL2t7893//935/HHnssL3jBC/La1772shZUedvb3pZ9+/Zlz549ufbaa6+uUAAAoLXmddi7//5kzZpkcjI5cyZZuDC5775kz55k9eorf9+bbropN910U5Jk0aJFueOOO/KFL3zhgmPOLaSycOHCGb/vO9/5zuzZsyd/9Ed/lOuvv/7KCwQAAFpv3oa98fEm6I2Pn+87c6Zp16xJTpxIhoev/vs8/PDDOXz4cF72spdl+/btecMb3pBf+IVfyLFjx/LjP/7jufHGG5889p577nkyxH31q1/NggXnr7Ldt29fPvOZz+TgwYMZno3CAACAVpu39+zt2NHM6E1ncrIZv1qnT5/O933f9+VXfuVX8g3f8A1Jmss4jxw5kpMnT+YjH/lI9u/f/+Tx27dvz5EjR3LkyJHs2bPngvdatmxZaq350Ic+dPWFAQAArTdvw97Ro+dn8i525kxy7NjVvf/ExES+7/u+L/fcc09e/epXf8348PBw7r777tx///0zer/Fixdnz549ef3rX5+PfexjV1ccAADQevM27I2MNPfoTWfhwmTZsit/71pr7r333txxxx257777pj3miSeeyAMPPJDnPe95M37f5cuX533ve182btyYI0eOXHmBAABA683bsLdhQ7LgKX76BQua8Su1b9++/PZv/3Y++tGPZsWKFVmxYsWTl2W+4Q1vyIoVK/LiF7843/It3zLtrN+lvOQlL8lv/uZv5lWvelU++9nPXnmRAABAq5Vaa69ruGKjo6N16rPpkuShhx7KHXfcMaPXT7ca54IFV78aZy9dzs8PAAAMtlLKwVrr6HRj83Y1zqQJdCdONIuxHDvWXLq5YcPsrMIJAADQS/M67CVNsLv33l5XAQAAMLvm7T17AADAPFNrsn17084Dwh4AADA/HDyYbNyYHDrU60rmxLy/jBMAAGi5U6ea2bxt25JSmnbp0mZ78eJeV9c1ZvYAAID2Onw4WbKkCXdbtzahb8uWZn/Jkma8pYS9Lnjsscfy0pe+NN/6rd+aF77whfm5n/u5JMkP//AP57bbbsuKFSty++23561vfeuTr7n77rsz9TESDz/8cF70ohclST7+8Y9n3bp1T479zM/8TF7xilfk8ccfn6OfCAAABtTKlcmuXc3KjBMTTd/ERLO/e3cz3lLCXjLrN2pee+21+ehHP5pPfvKTOXLkSD74wQ/mE5/4RJLk7W9/e44cOZIjR47kPe95Tz73uc9d1nu/7W1vy759+/L+978/11577azUCwAArbZuXbJpU7M9NNS0mzcna9f2rqY5IOwls36jZiklw52H9U1MTGRiYiKllAuOeeyxx5IkCxcunPH7vvOd78yePXuya9euXH/99bNSKwAAzAtjY8nkZLJ+fdOOjfW6oq6b32Hv1Knk5MkLb9Q8ebLpv0pnz57NihUrcuONN+blL395XvaylyVJ3vCGN2TFihW5+eab85rXvCY33njjk6+55557smLFiqxYsSJr1qy54P327duXX//1X88f/uEfPhkkAQCAGTh7Nlm+PNm/P9m5M9m3LxkZafpbbP6GvS7fqDk0NJQjR47k+PHjefDBB/OpT30qyfnLOE+ePJmPfOQj2b9//5Ov2b59+5OXeO7Zs+eC91u2bFlqrfnQhz50VXUBAMC8MzSU7N2bdCZgsmpVs3/uks6Wmr9hb45u1HzmM5+Zu+++Ox/84Acv6B8eHs7dd9+d+++/f0bvs3jx4uzZsyevf/3r87GPfWxWagMAANpr/oa9pGs3aj766KP5u7/7uyTJV77ylXz4wx/O7bfffsExTzzxRB544IE873nPm/H7Ll++PO973/uycePGHDly5KpqBAAA2m1+h72kKzdqPvLII/mO7/iOvPjFL85LXvKSvPzlL3/y0Qnn7tl78YtfnG/5lm/Jq1/96st675e85CX5zd/8zbzqVa/KZz/72auuFQAAaKdSZ+lxA70wOjpapz6bLkkeeuih3HHHHTN7g7Nnk1e+MvmFX2iu3/3EJ5Kf/dnkgx8c2Ot3L+vnBwAABlop5WCtdXS6sWvmupi+cu5GzXPO3agJAAAw4FzGCQAA0EKtDHuDfGnq1ZivPzcAAPC1Whf2rrvuunzpS1+ad8Gn1povfelLue6663pdCgAA3VZrsn1708JTaN09ezfffHOOHz+eRx99tNelzLnrrrsuN998c6/LAACg2w4eTDZuTG6/Pbnrrl5XQ59qXdh7xjOekdtuu63XZQAAwOw7daqZzdu2LSmlaZcubbYXL+51dfSZ1l3GCQAArXT4cLJkSRPutm5tQt+WLc3+kiXNOEwh7AEAwCBYuTLZtSsZHk4mJpq+iYlmf/fuZhymEPYAAGBQrFuXbNrUbA8NNe3mzcnatb2rib4l7AEAwCAZG0smJ5P165t2bKzXFdGnhD0AABgUZ88my5cn+/cnO3cm+/YlIyNNP1ykdatxAgBAaw0NJXv3nt9fterCfZjCzB4AAAwaD1VnBoQ9AAAYNOceqn7oUK8roY+5jBMAAAaFh6pzGczsAQDAIPBQdS6TsAcAAIPAQ9W5TMIeAAAMCg9V5zIIewAAMEg8VJ0ZEvYAAGBQeKg6l8FqnAAAMCg8VJ3LYGYPAACghYQ9AACAFhL2AAAALqXWZPv2ph0gwh4AAMClHDyYbNyYHDrU60ouiwVaAAAApnPqVDObt21bUkrTLl3abC9e3OvqnpaZPQAAgIsdPpwsWdKEu61bm9C3ZUuzv2RJM97nhD0AAICLrVyZ7NqVDA8nExNN38REs797dzPe54Q9AADg8gzogiWXbd26ZNOmZntoqGk3b07Wru1dTZeh62GvlDJUSjlcStnd2f+mUsreUsrRTvusKce+uZRyrJTymVLKK7pdGwAAcAUGdMGSKzI2lkxOJuvXN+3YWK8rmrG5mNn7iSQPTdl/U5KP1FpHknyks59SyguSvCbJC5O8MsmvlVKG5qA+AACYH652Ru7UqeTkyQsXLDl5sulvo7Nnk+XLk/37k507k337kpGRpn8AlNrFqddSys1J3pPkbUnuq7WuK6V8JsndtdZHSik3Jfl4rfX5pZQ3J0mt9f/qvPaPkryl1vqnT/X+o6Oj9cCBA12rHwAAWuXAgeQlL2nau+66vNcePpzceWeyYEFy7bXJV76SXH998vjjzYzXoUMDcR9b25RSDtZaR6cb6/bM3q8k+ekkk1P6FtdaH0mSTntjp39pks9POe54p+8CpZQfLaUcKKUcePTRR7tSNAAAtMpszMi1YMGS+aZrYa+Usi7JF2utB2f6kmn6vmbasdb6G7XW0Vrr6A033HBVNQIAQOvN5iMEBnzBkvmmmzN7/yjJq0opDyf5vSTfWUr5nSSnOpdvptN+sXP88SS3THn9zUlOdLE+AABov9mekRvgBUvmm66FvVrrm2utN9dab02z8MpHa60bk3wgyQ91DvuhJH/Q2f5AkteUUq4tpdyWZCTJg92qDwAA5o3ZmpEb8AVL5ptePGfvF5O8vJRyNMnLO/uptX46yXuT/GWSDybZXGv1vxoAAJgNszEjNzSU7N2bvOxlzf6qVc3+kEX0+9E1c/FNaq0fT/LxzvaXkvzTpzjubWlW7gQAAGZDrcnv/E4zA/fe9zZB7ROfSH72Z5sZOUGtteYk7AEAAD1y8GDy2tde+LiFczNytJqwBwAAbXTqVDOrN/VxC0uXNtuLF/e6OuZAL+7ZAwAAumk2H7fAwBL2AACgbTwAnQh7AADQTh6APu8JewAA0FYegD6vCXsAANBGHoA+71mNEwAA2ujcA9DP8biFecfMHgAAQAsJewAAAC0k7AEAALSQsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAABACwl7AAAALSTsAQAAtJCwBwAA0ELCHgAAQAsJewAAAC0k7AEAALSQsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAABACwl7AAAALSTsAQAAtJCwBwAA0ELCHgAA9FqtyfbtTQuzRNgDAIBeO3gw2bgxOXSo15XQItf0ugAAAJi3Tp1qZvO2bUtKadqlS5vtxYt7XR0DzsweAAD0wuHDyZIlTbjburUJfVu2NPtLljTjcBWEPQAA6IWVK5Ndu5Lh4WRioumbmGj2d+9uxuEqCHsAANAr69YlmzY120NDTbt5c7J27aVfZ0EXZkDYAwCAXhobSyYnk/Xrm3Zs7OlfY0EXZkDYAwCAXjl7Nlm+PNm/P9m5M9m3LxkZafqnc+pUcvLkhQu6nDzZ9MNFSh3gqd/R0dF64MCBXpcBAADdd/hwcuedyYIFybXXJl/5SnL99cnjjzczgocOuc9vHiqlHKy1jk43ZmYPAAAGgQVduEzCHgAA88sgL25ypQu6MC8JewAAzC+DvrjJlSzowrwk7AEAMD+0YXGTy13QhXnNAi0AALSfxU1oKQu0AAAwv1nchHlI2AMAYH6wuAnzjLAHAMD8YXET5hFhDwCA+cHiJswz1/S6AAAAmBNDQ8nevef3V626cB9axsweAABACwl7AAAALSTsAQAAtJCwBwAA0ELCHgAAQAsJewAAAC0k7AEAQJvVmmzf3rTMK8IeAAC02cGDycaNyaFDva6EOeah6gAA0EanTjWzedu2JaU07dKlzfbixb2ujjlgZg8AANrm8OFkyZIm3G3d2oS+LVua/SVLmnFaT9gDAIC2Wbky2bUrGR5OJiaavomJZn/37mac1hP2AACgjdatSzZtaraHhpp28+Zk7dre1cScEvYAAKCtxsaSyclk/fqmHRvrdUXMIWEPAADa6OzZZPnyZP/+ZOfOZN++ZGSk6WdesBonAAC00dBQsnfv+f1Vqy7cp/XM7AEAALSQsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAABACwl7AABAf6s12b69aZmxroW9Usp1pZQHSymfLKV8upTy1k7/W0opXyilHOl8rZnymjeXUo6VUj5TSnlFt2oDAAAGyMGDycaNyaFDva5koFzTxfd+PMl31lpPl1KekeT+UsofdsZ+udb6jqkHl1JekOQ1SV6Y5JuTfLiUsrzWeraLNQIAAP3q1KlmNm/btqSUpl26tNlevLjX1fW9rs3s1cbpzu4zOl+Xmnddn+T3aq2P11o/l+RYkpd2qz4AAKCPHT6cLFnShLutW5vQt2VLs79kSTPOJXX1nr1SylAp5UiSLybZW2t9oDP0Y6WUPy+lbC2lPKvTtzTJ56e8/Hin7+L3/NFSyoFSyoFHH320m+UDAAC9snJlsmtXMjycTEw0fRMTzf7u3c04l9TVsFdrPVtrXZHk5iQvLaW8KMl/TPK8JCuSPJLknZ3Dy3RvMc17/katdbTWOnrDDTd0pW4AAKAPrFuXbNrUbA8NNe3mzcnatb2raYDMyWqctda/S/LxJK+stZ7qhMDJJO/K+Us1jye5ZcrLbk5yYi7qAwAA+tTYWDI5maxf37RjY72uaGB0czXOG0opz+xsX5/ku5L8VSnlpimHfW+ST3W2P5DkNaWUa0sptyUZSfJgt+oDAAD63NmzyfLlyf79yc6dyb59ychI08/T6uZqnDcleU8pZShNqHxvrXV3KeW3Sykr0lyi+XCSf5kktdZPl1Lem+QvkzyRZLOVOAEAYB4bGkr27j2/v2rVhftcUqkD/GDC0dHReuDAgV6XAQAA0BOllIO11tHpxubknj0AAADmlrAHAADQQsIeAABACwl7AAAALSTsAQAAtJCwBwAA0ELCHgAAQAsJewAA0Gu1Jtu3Ny1fy+/nigh7AADQawcPJhs3JocO9bqS/uT3c0Wu6XUBAAAwb5061cxWbduWlNK0S5c224sX97q63vP7uSqlDvBU6OjoaD1w4ECvywAAgMt3+HBy553JggXJtdcmX/lKcv31yeOPJ5OTzSzWypW9rrJ3/H5mpJRysNY6Ot2YyzgBAKAXVq5Mdu1KhoeTiYmmb2Ki2d+9W5Dx+7lqwh4AAPTKunXJpk3N9tBQ027enKxd27ua+onfz1UR9gAAoJfGxprLEtevb9qxsV5X1F/8fq6YsAcAAL1y9myyfHmyf3+yc2eyb18yMtL04/dzlSzQAgAAMKAs0AIAADDPCHsAADAoak22b29aeBrCHgAADIqDB5ONG5tnzMHTuKbXBQAAAE/j1KlmNm/btqSUpl26tNlevLjX1dGnzOwBAEA/O3w4WbKkCXdbtzahb8uWZn/JkmYcpiHsAQBAP1u5Mtm1KxkeTiYmmr6JiWZ/9+5mHKYh7AEAQL9bty7ZtKnZHhpq2s2bk7Vre1cTfU/YAwCAQTA2lkxOJuvXN+3YWG/rsTJo3xP2AACg3509myxfnuzfn+zcmezbl4yMNP29YmXQvmc1TgAA6HdDQ8nevef3V626cH8uWRl0YJjZAwAAZsbKoANF2AMAAGbGyqADRdgDAABmzsqgA0PYAwAALk+/rQzKtIQ9AABg5vpxZVCmZTVOAABg5vppZVAuycweAABACwl7AAAALSTsAQAAtJCwBwAA0ELCHgAAQAsJewAAAC0k7AEAALSQsAcAANBCwh4AAPRarcn27U0Ls0TYAwCAXjt4MNm4MTl0qNeV0CLX9LoAAACYt06dambztm1LSmnapUub7cWLe10dA87MHgAA9MLhw8mSJU2427q1CX1btjT7S5Y043AVhD0AAOiFlSuTXbuS4eFkYqLpm5ho9nfvbsbhKgh7AADQK+vWJZs2NdtDQ027eXOydm3vaqI1hD0AAOilsbFkcjJZv75px8Z6XREtIewBAECvnD2bLF+e7N+f7NyZ7NuXjIw0/XCVrMYJAAC9MjSU7N17fn/Vqgv34SqY2QMAAGghYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AMAAGghYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AMAAGihroW9Usp1pZQHSymfLKV8upTy1k7/N5VS9pZSjnbaZ015zZtLKcdKKZ8ppbyiW7UBAAC0XTdn9h5P8p211m9NsiLJK0spq5K8KclHaq0jST7S2U8p5QVJXpPkhUlemeTXSilDXawPAACgtboW9mrjdGf3GZ2vmmR9kvd0+t+T5Hs62+uT/F6t9fFa6+eSHEvy0m7VBwAA0GZdvWevlDJUSjmS5ItJ9tZaH0iyuNb6SJJ02hs7hy9N8vkpLz/e6bv4PX+0lHKglHLg0Ucf7Wb5AAAAA6urYa/WerbWuiLJzUleWkp50SUOL9O9xTTv+Ru11tFa6+gNN9wwS5UCAAC0y5ysxllr/bskH09zL96pUspNSdJpv9g57HiSW6a87OYkJ+aiPgAAgLbp5mqcN5RSntnZvj7JdyX5qyQfSPJDncN+KMkfdLY/kOQ1pZRrSym3JRlJ8mC36gMAAGiza7r43jcleU9nRc0FSd5ba91dSvnTJO8tpdyb5G+S/ECS1Fo/XUp5b5K/TPJEks211rNdrA8AAKC1Sq1fc1vcwBgdHa0HDhzodRkAAAA9UUo5WGsdnW5sTu7ZAwAAYG4JewAAAC0k7AEAALSQsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAABACwl7AAAALXRNrwsAoPfGx5MdO5KjR5ORkWTDhmTRol5XBQBcDWEPYJ67//5kzZpkcjI5cyZZuDC5775kz55k9epeVwcAXCmXcQLMY+PjTdAbH2+CXtK05/pPn+5tfQDAlRP2AOaxHTuaGb3pTE424wDAYBL2AOaxo0fPz+hd7MyZ5Nixua0HAJg9wh7APDYy0tyjN52FC5Nly+a2HgBg9gh7APPYhg3Jgqf4L8GCBc04ADCYhD2AeWzRombVzUWLzs/wLVx4vn94uLf1AQBXzqMXAOa51auTEyeaxViOHWsu3dywQdADgEEn7AGQ4eHk3nt7XQUAMJtcxgkAANBCwh4AAEALCXsAAAAtJOwBAAC00IzDXinluaWU7+psX19KWdS9sgAAALgaMwp7pZT/Ncn/k+Q/dbpuTvL+LtUEAADAVZrpzN7mJP8oyd8nSa31aJIbu1UUAAAAV2emYe/xWutXz+2UUq5JUrtTEgAAAFdrpmHvj0sp/zrJ9aWUlyf5/SS7ulcWAAAAV2OmYe9NSR5N8hdJ/mWSPUl+pltFAQAAcHWumeFx1yfZWmt9V5KUUoY6fV/uVmEAAABcuZnO7H0kTbg75/okH579cgAAAJgNM53Zu67WevrcTq31dCnl67tUEwBzbHw82bEjOXo0GRlJNmxIFnmaKgAMtJmGvTOllDtrrYeSpJRyV5KvdK8sAObK/fcna9Ykk5PJmTPJwoXJffcle/Ykq1f3ujoA4ErNNOy9Lsnvl1JOdPZvSrKhKxUBMGfGx5ugNz5+vu/MmaZdsyY5cSIZHu5NbQDA1ZlR2Ku1/lkp5fYkz09SkvxVrXWiq5UB0HU7djQzetOZnGzG7713bmsCAGbHJcNeKeU7a60fLaW8+qKhkVJKaq3v62JtAHTZ0aPnZ/IuduZMcuzY3NYDAMyep5vZ+ydJPprkf5pmrCYR9gAG2MhIc4/edIFv4cJk2bK5rwkAmB2l1nrpA0pZkOT7a63vnZuSZm50dLQeOHCg12UADKzx8WTp0gvv2Ttn0SL37AFAvyulHKy1jk439rTP2au1Tib5sVmvCoCeW7SoWXVz0aJmJi9p2nP9gh4ADK6Zrsa5t5TyU0l2JHnyYp9a6992pSoA5szq1c0M3o4dzT16y5Y1z9kT9ABgsM007P1Imnv0Nl3U/w9ntxwAemF42KqbANA2Mw17L0gT9FanCX3/Ocmvd6soAAAArs7T3rPX8Z4kdyT590n+7872e7pVFEBr1Jps3960AABzaKYze8+vtX7rlP2PlVI+2Y2CAFrl4MFk48bk9tuTu+7qdTUAwDwy05m9w6WUVed2SikvS7KvOyUBtMCpU8nJk8m2bUkpTXvyZNMPADAHnvY5e0lSSnkoyfOT/E2n6x8keSjJZJJaa31x1yq8BM/ZA/rS4cPJnXcmCxYk116bfOUryfXXJ48/nkxOJocOJStX9rpKAKAFLvWcvZlexvnKWawHoN1Wrkx27UruuSf58pebvomJZsnLsTFBDwCYEzMKe7XWv+52IQCtsm5dsmlT8o53JENDTd/mzcnatb2tCwCYN2Z6zx4Al2tsrLlsc/36ph0b63VFAMA8IuwBdMPZs8ny5cn+/cnOncm+fcnISNMPADAHZnrPHgCXY2go2bv3/P6qVRfuAwB0mZk9AACAFhL2ALqp1mT79qadx8bHk3e/O3njG5t2fLzXFQFA+7mME6CbDh5MNm5Mbr89ueuuXlfTE/ffn6xZ06xRc+ZMsnBhct99yZ49yerVva4OANpL2APohlOnmtm8bduSUpp26dJme/HiXlc3Z8bHm6A3dSbvzJmmXbMmOXGiefwgADD7XMYJMNsOH06WLGnC3datTejbsqXZX7KkGZ8nduxoZvSmMznZjAMA3SHsAcy2lSuTXbuaKauJiaZvYqLZ3727GZ8njh49P5N3sTNnkmPHruLN3Q8JAJck7AF0w7p1yaZNzfbQUNNu3pysXdu7mnpgZKS5R286Cxcmy5ZdxZufux/y0KGreBMAaC9hD6BbxsaaaxXXr2/asbFeVzTnNmxIFjzFf2kWLGjGL9upU8nJkxfeD3nyZNMPADxJ2APohrNnk+XLk/37k507k337mmmus2d7XdmcWrSoWXVz0aLzM3wLF57vv+zFWdwPCQAzVuoA3+swOjpaDxw40OsyAHgap083i7EcO9Zcurlhw1Wswrl7d3LPPcmXv5w88URyzTXJ1399M3M6zy6TBYBSysFa6+h0Yx69AEDXDQ8n9947S2927n7Id7xjXt8PCQBPx2WcAAwe90MCwNMS9gAYLO6HBIAZcRknAINlaCjZu/f8/qpVF+4DAEnM7AEAALSSsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAH0E21Jtu3Ny0AwBwS9gC66eDBZOPG5NChXlcCAMwzwh5AN5w6lZw8mWzblpTStCdPNv3MDrOmAHBJXQt7pZRbSikfK6U8VEr5dCnlJzr9bymlfKGUcqTztWbKa95cSjlWSvlMKeUV3aoNoKsOH06WLEmWLk22bm3CyJYtzf6SJc04V8+sKQBc0jVdfO8nkvxkrfVQKWVRkoOllL2dsV+utb5j6sGllBckeU2SFyb55iQfLqUsr7We7WKNALNv5cpk167knnuSL3+56ZuYSIaHk7GxZpwrd+pUE6CnzpouXdpsL17c6+oAoG90bWav1vpIrfVQZ3s8yUNJll7iJeuT/F6t9fFa6+eSHEvy0m7VB9BV69YlmzY120NDTbt5c7J2be9qagOzpgAwY3Nyz14p5dYkK5M80On6sVLKn5dStpZSntXpW5rk81NedjzThMNSyo+WUg6UUg48+uij3Swb4OqMjSWTk8n69U07NtbrigbfuVnT4eFmtjQ5P2u6e7dZUwCYouthr5QynGRnktfVWv8+yX9M8rwkK5I8kuSd5w6d5uVfc9d9rfU3aq2jtdbRG264oTtFA1yts2eT5cuT/fuTnTuTffuSkZGmn6tj1hQAZqSrYa+U8ow0QW97rfV9SVJrPVVrPVtrnUzyrpy/VPN4klumvPzmJCe6WR9A1wwNJXv3Ji97WbO/alWzfy6ccHXMmgLA0+rmapwlyZYkD9Va/92U/pumHPa9ST7V2f5AkteUUq4tpdyWZCTJg92qD4ABZdYUAGakm6tx/qMk/yLJX5RSjnT6/nWSf15KWZHmEs2Hk/zLJKm1frqU8t4kf5lmJc/NVuIEBl6tzazTD/5gs1okV+/crOk552ZNAYALlDrAD6MdHR2tBw4c6HUZAE/twIHkJS9p2rvu6nU1AEDLlFIO1lpHpxvr5swewPzlWXAAQI/NyaMXAOYVz4IDAPqAsAcw2zwLDgDoA8IeQDd4FhwA0GPCHkC3eBYcANBDwh5AN5x7Fty+fcmrX53cf79nwQEAc0rYA+iGc8+Cu+aaZOPG5Ou+rtk/d0knAECXCXsA3XDqVHLy5IWPXjh5sumfh8bHk3e/O3njG5t2fHwW3rTWZPv2pgW4HP79YJ7wUHWA2Xb4cHLnncmCBcm11yZf+Upy/fXJ44839+4dOjSvVuS8//5kzZrmRz9zJlm4sPnV7NmTrF59FW/sgfXAlfLvBy1yqYeqm9kDmG0evfCk8fEm6I2PN0Evadpz/adPX8GbmjUFrpR/P5hnhD2AbvDohSTJjh3NjN50Jieb8cvigfXAlfLvB/OQsAfQLR69kKNHz8/oXezMmeTYsct8Q7OmwJXy7wfzkLAH0A3nHr2wf3+yc2fzCIZ5+OiFkZHmHr3pLFyYLFt2BW9q1hS4Uv79YJ6xQAsAXTM+3lwhNd3qm4sWJSdONP+n+mV77nOT48eT7/me5P3vT265JXn44asrFpgf/PtBy1igBYCeWLSoWXVz0aLzM3wLF57vv6KgZ9YUuFL+/WCeMbMHQNedPt0sxnLsWHPp5oYNVxj0AIALXGpm75q5LgaA+Wd4OLn33l5XAQDzi8s4AQAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AMAAGghYQ+gm2pNtm9vWgCAOSTsAXTTwYPJxo3JoUO9rgQAmGc8VB2gG06dambztm1r9rdtS5YuTUpJFi/uZWUAwDxhZg9gth0+nCxZ0oS7d7+76XvXu5r9JUuacQCALhP2AGbbypXJb/1W8vVfn3z1q03fV7+aLFyY/PZvN+MAAF0m7AHMtsOHk9e+Njl9+vzCLLUm4+PJv/gXZvYAgDkh7AHMtpUrk127mvvzpiol2b3bzB4AMCeEPYBu+O7vTp773GRo6PzXc5+bvPKVva4MAJgnhD2AbhgaSiYnm8s3169v2lqbfgCAOSDs0bfGx5uFDN/4xqYdH+91RXAZzp5Nli9P9u9Pdu5M9u1LRkaafgCAOVDqucUDBtDo6Gg9cOBAr8ugC+6/P1mzppkYOXOmWcRwwYJkz55k9epeVwctVmsyNpb84A9+7T2HAEDfKaUcrLWOTjdmZo++Mz7eBL3x8SboJU17rv/06d7WB6128GCycWNy6FCvKwEArpKwR9/ZsaOZ0ZvO5GQzDgOj1mT79vOPYOhXp04lJ08m27Y1M3rbtjX7p071ujIA4AoJe/Sdo0fPz+hd7MyZ5Nixua0HrsogzJQdPpwsWZIsXZps3doE0y1bmv0lSzwXEAAGlLBH3xkZae7Rm87ChcmyZXNbD1yRQZopO/dcwOHhZGKi6ZuYaPY9FxAABpawR9/ZsKFZjGU6CxY049DXBnGmbN26ZNOmZvvc4yE2b07Wru1dTQDAVRH26DuLFjWrbi5adH6Gb+HC8/3Dw72tD57WoM6UjY01N8auX9+0Y2O9rggAuArCHn1p9erkxInkV381edObmvbECY9dYICcmyk7t9rQ5GR/z5R5LiAAtI7n7AF0y3Ofm/zN31y4//DDPSsHAGgfz9kDmGuf/GRy003J857X7D/vec39ep/8ZG/rAgDmDWEPYLb97u8mK1YkDzyQfPazTd9nP9vsr1jRjAMAdJmwBzDb/vk/T372Z6cf+7mfa8YBALpM2APohp//+WTVqgv7vu3bkre8pSflAADzj7AH0C1/9mdN+83f3LQPPti7WgCAeUfYA+iGr341+cZvTN797uQLX0je9a5m/6tf7XVlAMA84dELAAAAA8qjFwAAAOYZYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AMAAGghYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2BsA4+PJu9+dvPGNTTs+3uuKgIFSa7J9e9POxesAgL7QtbBXSrmllPKxUspDpZRPl1J+otP/TaWUvaWUo532WVNe8+ZSyrFSymdKKa/oVm2D5P77k6VLk9e9LvmlX2rapUubfoAZOXgw2bgxOXRobl4HAPSFbs7sPZHkJ2utdyRZlWRzKeUFSd6U5CO11pEkH+nspzP2miQvTPLKJL9WShnqYn19b3w8WbOmac+cafrOnDnff/p0b+sD+typU8nJk8m2bUkpTXvyZNPfjdcBAH2la2Gv1vpIrfVQZ3s8yUNJliZZn+Q9ncPek+R7Otvrk/xerfXxWuvnkhxL8tJu1TcIduxIJienH5ucbMYBpnX4cLJkSXMpwNatzaWYW7Y0+0uWNOOz+ToAoO/MyT17pZRbk6xM8kCSxbXWR5ImECa5sXPY0iSfn/Ky452+i9/rR0spB0opBx599NGu1t1rR4+en9G72JkzybFjc1sPMEBWrkx27UqGh5OJiaZvYqLZ3727GZ/N1wEAfafrYa+UMpxkZ5LX1Vr//lKHTtP3NasC1Fp/o9Y6WmsdveGGG2arzL40MpIsXDj92MKFybJlc1sPMGDWrUs2bWq2hzpXxW/enKxd253XAQB9pathr5TyjDRBb3ut9X2d7lOllJs64zcl+WKn/3iSW6a8/OYkJ7pZX7/bsCFZ8BRnaMGCZhzgksbGmuu+169v2rGx7r4OAOgb3VyNsyTZkuShWuu/mzL0gSQ/1Nn+oSR/MKX/NaWUa0sptyUZSfJgt+obBIsWJXv2NO25Gb6FC8/3Dw/3tj6gz509myxfnuzfn+zcmezb11wycPZsd14HAPSVUrv0/KRSyuok/znJXyQ5t8zIv05z3957k/yDJH+T5AdqrX/bec2/SfIjaVbyfF2t9Q8v9T1GR0frgQMHulJ/Pzl9ulmM5dix5tLNDRsEPQAAICmlHKy1jk471q2wNxfmS9gDAACYzqXC3pysxgkAAMDcEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYAwAAaCFhD4DeqzXZvr1pAYBZIewB0HsHDyYbNyaHDvW6EgBojWt6XQAA89ipU81s3rZtSSlNu3Rps714ca+rA4CBZmYPgN44fDhZsqQJd1u3NqFvy5Zmf8mSZhwAuGLCHgC9sXJlsmtXMjycTEw0fRMTzf7u3c04AHDFhD0AemfdumTTpmZ7aKhpN29O1q7tXU0A0BLCHgC9NTaWTE4m69c37dhYrysCgFYQ9gDonbNnk+XLk/37k507k337kpGRph8AuCpW44QBMj6e7NiRHD3afB7esCFZtKjXVcFVGBpK9u49v79q1YX7AMAVE/ZgQNx/f7JmTXOV25kzycKFyX33JXv2JKtX97o6AAD6jcs4YQCMjzdBb3y8CXpJ057rP326t/UBANB/hD0YADt2NDN605mcbMYBAGAqYQ8GwNGj52f0LnbmTHLs2NzWAwBA/xP2YACMjDT36E1n4cJk2bK5rQcAgP4n7MEA2LAhWfAUf60LFjTjAAAwlbAHA2DRombVzUWLzs/wLVx4vn94uLf1AQDQfzx6AQbE6tXJiRPNYizHjjWXbm7YIOgBADA9YQ8GyPBwcu+9va4CAIBB4DJOAACAFhL2AAAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AOYqVqT7dubFgCgzwl7ADN18GCycWNy6FCvKwEAeFoeqg7wdE6dambztm1LSmnapUub7cWLe10dAMC0zOwBXMrhw8mSJU2427q1CX1btjT7S5Y04wAAfUjYA7iUlSuTXbuS4eFkYqLpm5ho9nfvbsYBAPqQsAfwdNatSzZtaraHhpp28+Zk7dre1QQA8DSEPYCZGBtLJieT9eubdmys1xUBAFySsAfwdM6eTZYvT/bvT3buTPbtS0ZGmn4AgD5lNU6ApzM0lOzde35/1aoL9wEA+pCwB9MYH0927EiOHm0mcDZsSBYt6nVV/VsXAAD9p9Rae13DFRsdHa0HDhzodRm0zP33J2vWNLdlnTmTLFyYLFiQ7NmTrF6tLgAA+kcp5WCtdXTaMWEPzhsfbx6fNj7+tWOLFiUnTjQr7qsLAIB+cKmwZ4EWmGLHjmbmbDqTk814L/RrXQAA9C9hD6Y4erS5RHI6Z84kx47NbT3n9GtdAAD0L2EPphgZae6Fm87ChcmyZXNbzzn9WhcAAP1L2IMpNmxoFj2ZzoIFzXgv9GtdAAD0L2EPpli0qFndctGi8zNpCxee7+/VIij9WhcAAP3Lc/bgIqtXN6tb7tjR3Au3bFkzc9brQLV6dfKZzyRvelPTPv/5yS/+YnLTTb2tCwCA/uTRCzAgPGcPAICLefQCDLjx8SbojY+fX5XzzJnz/adP97Y+AAD6j7A3i8bHk3e/O3njG5t2ugdgw5XwnD0AAC6Xe/ZmyXSX2N13n0vsmB2eswcAwOUyszcLXGJHt3nOHgAAl0vYmwUusaPbPGcPAIDLJezNApfY0W2eswcAwOVyz94sOHeJ3XSBzyV2zJZ+ff4fAAD9yXP2ZsH4eLJ06fSrby5a1HxA94EcAACYbZ6z12UusQMAAPqNyzhniUvsAACAfiLszaLh4eTee3tdBQAAgMs4AQAAWknYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AMAAGghYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2BsD4ePLudydvfGPTjo/3uiKYh2pNtm9vWgCAAdC1sFdK2VpK+WIp5VNT+t5SSvlCKeVI52vNlLE3l1KOlVI+U0p5RbfqGjT3358sXZq87nXJL/1S0y5d2vQDc+jgwWTjxuTQoV5XAgAwI9d08b23JfkPSX7rov5frrW+Y2pHKeUFSV6T5IVJvjnJh0spy2utZ7tYX98bH0/WrLlwJu/MmaZdsyY5cSIZHu5NbTBvnDrVzOZt25aU0rRLlzbbixf3ujoAgKfUtZm9WuufJPnbGR6+Psnv1Vofr7V+LsmxJC/tVm2DYseOZHJy+rHJyWYc6KLDh5MlS5pwt3VrE/q2bGn2lyxpxgEA+lQv7tn7sVLKn3cu83xWp29pks9POeZ4p+9rlFJ+tJRyoJRy4NFHH+12rT119Oj5mbyLnTmTHDs2t/XAvLNyZbJrVzOFPjHR9E1MNPu7dzfjAAB9aq7D3n9M8rwkK5I8kuSdnf4yzbHTroJQa/2NWutorXX0hhtu6EqR/WJkJFm4cPqxhQuTZcvmth6Yl9atSzZtaraHhpp28+Zk7dre1QQAMANzGvZqradqrWdrrZNJ3pXzl2oeT3LLlENvTnJiLmvrRxs2JAue4gwtWNCMA3NgbKy5dnr9+qYdG+t1RQAAT2tOw14p5aYpu9+b5NxKnR9I8ppSyrWllNuSjCR5cC5r60eLFiV79jTtuRm+hQvP91ucBebA2bPJ8uXJ/v3Jzp3Jvn3NtPvZeb1+FAAwALq2Gmcp5XeT3J3kOaWU40l+LsndpZQVaS7RfDjJv0ySWuunSynvTfKXSZ5Isnm+r8R5zurVzaqbO3Y09+gtW9bM6Al6MEeGhpK9e8/vr1p14T4AQJ8qdYAfEDw6OloPHDjQ6zIAAAB6opRysNY6Ot1YL1bjBAAAoMuEPQAAgBYS9gAAAFpI2AMAAGghYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYAwAAaCFhDwAAoIWEPQAAgBYS9gAAAFpI2AMAAGghYQ8AAKCFhD0AAIAWEvYAAABaSNgDAABoIWEPAACghYQ9AACAFhL2AAAAWkjYY94aH0/e/e7kjW9s2vHxGbyo1mT79qYFAIA+dk2vC4BeuP/+ZM2aZHIyOXMmWbgwue++ZM+eZPXqS7zw4MFk48bk9tuTu+6as3oBAOByCXvMO+PjTdCbOpN35kzTrlmTnDiRDA9f9KJTp5rZvG3bklKadunSZnvx4jmqHAAAZs5lnMw7O3Y0M3rTmZxsxi9w+HCyZEkT7rZubULfli3N/pIlzTgAAPQZYY955+jR8zN5FztzJjl27KLOlSuTXbua6b6JiaZvYqLZ3727GQcAgD4j7HFFrmhxkz4xMtLcozedhQuTZcumGVi3Ltm0qdkeGmrazZuTtWu7UiMAAFytUgd4VcHR0dF64MCBXpcx70y3uMmCBTNY3KRPjI83V2BOF1AXLXqKe/aS5LnPTY4fT77ne5L3vz+55Zbk4Ye7WywAAFxCKeVgrXV0ujEze1yWqYubnLsU8syZ8/2nT/e2vplYtKgJposWnZ/hW7jwfP+0Qe/s2WT58mT//mTnzmTfvmaK8OzZOa0dAABmymqcXJaZLG5y771zW9OVWL26mcHbsaO5R2/ZsmTDhqcIeklz6ebevef3V626cB8AAPqMsMdluezFTfrY8PBgBFMAALgSLuPkslzR4iYAAMCcE/a4LBs2NIuxTGfBgmYcAADoPWGPy3JFi5sAAABzzj17XLbLXtwEAACYc8IeV8TiJgAA0N9cxgkAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAABACwl7AAAALSTsAQAAtJCwBwAA0ELCHgAAQAsJewAAAC0k7AEAALSQsAcAANBCwh4AAEALCXsAAAAtJOwBAAC0kLAHAADQQsIeAABACwl7AAAALVRqrb2u4YqVUh5N8te9rmMOPSfJf+11EVwW52zwOGeDxfkaPM7Z4HHOBo9zNniu5pw9t9Z6w3QDAx325ptSyoFa62iv62DmnLPB45wNFudr8Dhng8c5GzzO2eDp1jlzGScAAEALCXsAAAAtJOwNlt/odQFcNuds8Dhng8X5GjzO2eBxzgaPczZ4unLO3LMHAADQQmb2AAAAWkjYAwAAaCFhr8dKKVtLKV8spXxqSt/bSyl/VUr581LK/1tKeeaUsTeXUo6VUj5TSnnFlP67Sil/0Rn796WUMsc/yrww3fmaMvZTpZRaSnnOlD7nq8ee6pyVUv73znn5dCnll6b0O2c99hT/Lq4opXyilHKklHKglPLSKWPOWQ+VUm4ppXyslPJQ5+/pJzr931RK2VtKOdppnzXlNc5ZD13inPn80aee6pxNGfcZpM9c6pzN6WeQWquvHn4l+cdJ7kzyqSl9/2OSazrb/zbJv+1svyDJJ5Ncm+S2JJ9NMtQZezDJtyUpSf4wyXf3+mdr49d056vTf0uSP0ry10me43z1z9dT/I19R5IPJ7m2s3+jc9Y/X09xzj507neeZE2Sjztn/fGV5KYkd3a2FyX5L53z8ktJ3tTpf5P/lvXP1yXOmc8fffr1VOess+8zSB9+XeLvbE4/g5jZ67Fa658k+duL+j5Ua32is/uJJDd3ttcn+b1a6+O11s8lOZbkpaWUm5J8Q631T2vzv4jfSvI9c/IDzDPTna+OX07y00mmrnjkfPWBpzhn/yrJL9ZaH+8c88VOv3PWB57inNUk39DZ/sYkJzrbzlmP1VofqbUe6myPJ3koydI05+Y9ncPek/O/f+esx57qnPn80b8u8XeW+AzSly5xzub0M4iw1/9+JE2CT5r/gXx+ytjxTt/SzvbF/cyBUsqrknyh1vrJi4acr/61PMm3l1IeKKX8cSnlJZ1+56x/vS7J20spn0/yjiRv7vQ7Z32klHJrkpVJHkiyuNb6SNJ86ElyY+cw56yPXHTOpvL5o09NPWc+gwyGi/7O5vQzyDVXUTddVkr5N0meSLL9XNc0h9VL9NNlpZSvT/Jv0lz68jXD0/Q5X/3hmiTPSrIqyUuSvLeU8g/jnPWzf5Xk9bXWnaWUf5ZkS5LvinPWN0opw0l2JnldrfXvL3FLiXPWJy4+Z1P6ff7oU1PPWZpz5DNIn5vm38Y5/QxiZq9PlVJ+KMm6JPd0pmyTJsnfMuWwm9NcynQ85y+1mNpP9z0vzXXVnyylPJzmd3+olLIkzlc/O57kfbXxYJLJJM+Jc9bPfijJ+zrbv5/k3AItzlkfKKU8I82Hme211nPn6VTn8qN02nOXKjlnfeApzpnPH31smnPmM0ife4q/szn9DCLs9aFSyiuTvDHJq2qtX54y9IEkrymlXFtKuS3JSJIHO5fHjJdSVnVW53ltkj+Y88LnoVrrX9Rab6y13lprvTXNH+SdtdaTcb762fuTfGeSlFKWJ/m6JP81zlk/O5Hkn3S2vzPJ0c62c9Zjnd/vliQP1Vr/3ZShD6QJ6em0fzCl3znroac6Zz5/9K/pzpnPIP3tEv82vj9z+Rlkpiu5+OraSj2/m+SRJBNp/kjvTXND5ueTHOl8/fqU4/9NmtV5PpMpK/EkGU3yqc7Yf0hSev2ztfFruvN10fjD6ayE5Xz1x9dT/I19XZLf6ZyDQ0m+0znrn6+nOGerkxxMs1LZA0nucs7646tzbmqSP5/y3601SZ6d5CNpgvlHknyTc9YfX5c4Zz5/9OnXU52zi47xGaSPvi7xdzann0FK5w0AAABoEZdxAgAAtJCwBwAA0ELCHgAAQAsJewAAAC0k7AEAALSQsAfAwCmlPLOUsmkGx91aSvnBGR73qVmo64ZSygOllMOllG+fSY0A0C3CHgCD6JlJZhKkbk3ytGFvFv3TJH9Va12Z5nllVxX2SilDs1IVAPOSsAfAIPrFJM8rpRwppby9NN5eSvlUKeUvSikbphz37Z3jXt+ZwfvPpZRDna//4VLfpJRyUynlTzqv/1Qp5ds7/f9zKeW/lFL+uJTyrlLKfyilrEjyS0nWlFKOJPm3U2uc5r3fX0o5WEr5dCnlR6f0ny6l/Hwp5YEk31ZK2VhKebDzPv/pXAAspfzHUsqBzuvfevW/UgDaxkPVARg4pZRbk+yutb6os/99Sf63JK9M8pwkf5bkZUmen+Snaq3rOsd9fZLJWutjpZSRJL9bax29+P2mfJ+fTHJdrfVtnZD19UmGkzyQ5K4k/z3Jx5IcrrX+WCnlh5OMdranfc8p7/1Ntda/LaVc36n3n9Rav1RKqUk21FrfW0q5I02AfHWtdaKU8mtJPlFr/a0prx9K8pEkP15r/fOr/uUC0BrX9LoAAJgFq9MEt7NJTpVS/jjJS5L8/UXHPSPJuVm4s0mWP837/lmSraWUZyR5f631SCnlnyb5eK310SQppeyYwftM58dLKd/b2b4lyUiSL3Xq2tnp/6dpQuWflVKS5PokX+yM/bPOjOA1SW5K8oIkwh4ATxL2AGiDMsPjXp/kVJJvTXMrw2OXOrjW+iellH+cZG2S3+5cjvn3Sa7qsphSyt1JvivJt9Vav1xK+XiS6zrDj3VCa9L8XO+ptb75otffluSnkryk1vrfSinbprweAJK4Zw+AwTSeZNGU/T9JsqGUMlRKuSHJP07y4DTHfWOSR2qtk0n+RZJLLoBSSnluki/WWt+VZEuSO9Ncwnl3KeXZnRm/H5hhjVN9Y5L/1gl6tydZ9RTHfSTJ95dSbuzU802dmr4hyZkk/72UsjjJd1/q5wBgfjKzB8DA6dzbtq/zuIQ/TPLTSb4tySfTzLr9dK31ZCnlS0meKKV8Msm2JL+WZGcp5QfS3Gt35mm+1d1J3lBKmUhyOslra62PlFLekuRPkzyS5FCmCY0X11hrfcOU4Q8m+d9KKX+e5DNJPvEUP+dfllJ+JsmHSikLkkwk2Vxr/UQp5XCSTyf5/5Lse5qfA4B5yAItAHAVpi7K0utaAGAql3ECAAC0kJk9AACAFjKzBwAA0ELCHgAAQAsJewAAAC0k7AEAALSQsAcAANBC/z/i28l5/ixonAAAAABJRU5ErkJggg==\n",
+      "text/plain": [
+       "<Figure size 1080x720 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "#legend fuction automatically creates a legend for any labeled plot elements\n",
+    "def plot_scatter_chart(df, location):\n",
+    "    bhk2 = df[(df.location==location)& (df.bhk==2)]\n",
+    "    bhk3 = df[(df.location==location)& (df.bhk==3)]\n",
+    "    matplotlib.rcParams['figure.figsize'] = (15,10)\n",
+    "    plt.scatter(bhk2.total_sqft,bhk2.price,color='blue',label='2BHK', s=50)\n",
+    "    plt.scatter(bhk3.total_sqft,bhk3.price,marker='*',color='red',label='3BHK',s=50)\n",
+    "    plt.xlabel('total sqft area')\n",
+    "    plt.ylabel('price')\n",
+    "    plt.title(location)\n",
+    "    plt.legend()\n",
+    "\n",
+    "plot_scatter_chart(df6,'Rajaji Nagar')"
+   ]
+  },
+  {
+   "cell_type": "raw",
+   "id": "df15973a",
+   "metadata": {},
+   "source": [
+    " \n",
+    "we should also remove properties where for same location, the price of 3 bedrooms apartment is less than 2 bedroom apartment (with same sqft area) which we will do is for a given location, we will build a dictionary of stats per bhk.i.e.\n",
+    "{\n",
+    "    '1': {\n",
+    "         'mean' : 4000,\n",
+    "         'std' : 2000,\n",
+    "         'count':34\n",
+    "    },\n",
+    "    '2' : {\n",
+    "          'mean' : 430,\n",
+    "         'std' : 2300\n",
+    "         'count':22\n",
+    "    },\n",
+    "}\n",
+    "now we can remove those 2BHK aprtments whose price_per_sqft is less than mean price_per_sqft of 1bhk apartment"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "id": "209d5891",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(7329, 7)"
+      ]
+     },
+     "execution_count": 37,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#append fuction inserts a single element into a existing list.\n",
+    "#code for outlier removal\n",
+    "#now I have to remove the outliers and remove the uneven result where the price of the 2bhk is higher than the 3bhk in the same location.\n",
+    "def remove_bhk_outliers(df):\n",
+    "    exclude_indices = np.array([])\n",
+    "    for location, location_df in df.groupby('location'):\n",
+    "        bhk_stats ={}\n",
+    "        for bhk, bhk_df in location_df.groupby('bhk'):\n",
+    "            bhk_stats[bhk] = {\n",
+    "                'mean': np.mean(bhk_df.price_per_sqft),\n",
+    "                'std': np.std(bhk_df.price_per_sqft),\n",
+    "                'count': bhk_df.shape[0]\n",
+    "            }\n",
+    "        for bhk, bhk_df in location_df.groupby('bhk'):\n",
+    "            stats = bhk_stats.get(bhk-1)\n",
+    "            if stats and stats['count']>5:\n",
+    "                exclude_indices = np.append(exclude_indices, bhk_df[bhk_df.price_per_sqft<(stats['mean'])].index.values)\n",
+    "    return df.drop(exclude_indices,axis='index')\n",
+    " \n",
+    "df7 = remove_bhk_outliers(df6)\n",
+    "df7.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "id": "b51d42cc",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAA3sAAAJcCAYAAABAE73ZAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjUuMSwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy/YYfK9AAAACXBIWXMAAAsTAAALEwEAmpwYAABGjUlEQVR4nO3df7xfdX0n+NcnNxgwSW1VSDBQYSUpij8SCBKnzAyOtSqkjaPViKTVXbp2l3QcdMZVu7L+WG27qNNxxupsFRra5mpo41qTRTSitk0iYn6pKHVDK60RiAxqe4kQLsln/zjfa27CTbgh93u/957v8/l43Mc553PO99z39/Llqy8+n/P5lFprAAAAaJcZvS4AAACAiSfsAQAAtJCwBwAA0ELCHgAAQAsJewAAAC0k7AEAALSQsAcA41RKeVcp5c+Ocf6uUsovPc57f7mU8puPvzoAOJywB0BfGSuQlVJeX0rZ3KuaAKAbhD0AAIAWEvYAYJRSytNKKetLKfeVUr5bSnnjEZecXEpZV0oZKqXsKKU874jzF5ZSvl1K+VEp5Y9LKSd37vtzpZSNnfv+qLN/xuS8KwD6kbAHAB2llBlJNiT5epIFSV6U5OpSyktGXbYiyZ8neXKSwSSfLqWcNOr8FUlekuQZSRYleUenfUaSP07y9CQ/n+TBJB/u2psBoO8JewD0o0+XUn488pPkI532C5OcWmt9T6314Vrr3yf5WJLXjHrt9lrrX9Rah5P8pyQnJ1k26vyHa63fq7X+MMn7klyeJLXW+2ut62utP6m1DnXO/euuvksA+trMXhcAAD3w8lrrF0YOSimvT/KbaXrdntYJgCMGkvzNqOPvjezUWg+WUvYkedpY55P8w8i5UsoTk/xBkpcm+bnO+bmllIFa64ETfUMAcCRhDwAO+V6S79ZaFx7jmjNHdjrDPs9IcvdY59MM1xw59x+S/EKSi2qt95ZSFifZmaRMQN0A8CiGcQLAIbcl+edSyltLKaeUUgZKKc8upVw46poLSimvKKXMTHJ1kv1Jbh11fnUp5YxSypOT/E6SdZ32uWme0/tx59w7u/5uAOhrwh4AdHSGU/5KksVJvpvkvyf5eJInjbrsL5OsTPKjJL+e5BWd5/dGDCb5fJK/7/y8t9P+n5Oc0rnnrUlu7tLbAIAkSam19roGAAAAJpiePQAAgBYS9gAAAFpI2AMAAGghYQ8AAKCFpvU6e0996lPrWWed1esyAAAAemL79u3/vdZ66ljnpnXYO+uss7Jt27ZelwEAANATpZR/ONo5wzgBAABaSNgDAABoIWEPAACghab1M3tjGR4ezp49e/LQQw/1upRJd/LJJ+eMM87ISSed1OtSAACAHmtd2NuzZ0/mzp2bs846K6WUXpczaWqtuf/++7Nnz56cffbZvS4HAADosdYN43zooYfylKc8pa+CXpKUUvKUpzylL3s0AQCAR2td2EvSd0FvRL++bwAA4NFaGfYAAAD6nbDXBd/73vfywhe+MM985jNz3nnn5UMf+lCS5PWvf33OPvvsLF68OOeee27e/e53//Q1l1xyyWELxN9111159rOfnST58pe/nOXLl//03Dve8Y685CUvyf79+yfpHQEAANNN6yZoOV5DQ8m6dcnu3cnChcnKlcncuSd2z5kzZ+aDH/xgzj///AwNDeWCCy7Ii1/84iTJ+9///vzar/1aHnrooTzrWc/Kb/zGbxzXhCrve9/7smXLltx0002ZNWvWiRUKAAC0Vl+Hvc2bk0svTQ4eTPbtS2bPTt785uSmm5KLL3789z399NNz+umnJ0nmzp2bZz7zmfn+979/2DUjE6nMnj173Pf94Ac/mJtuuimf+9zncsoppzz+AgEAgNbr27A3NNQEvaGhQ2379jXbSy9N7r47mTPnxH/PXXfdlZ07d+aiiy7K2rVr85a3vCXvfe97c+edd+aNb3xjTjvttJ9ee8UVV/w0xD388MOZMePQKNstW7bkO9/5TrZv3545E1EYAADQan37zN66dU2P3lgOHmzOn6gHHnggr3zlK/Of//N/zs/8zM8kaYZx7tq1K/fee29uueWWbN269afXr127Nrt27cquXbty0003HXavc845J7XWfP7znz/xwgAAgNbr27C3e/ehnrwj7duX3Hnnid1/eHg4r3zlK3PFFVfkFa94xaPOz5kzJ5dcckk2b948rvvNmzcvN910U970pjflS1/60okVBwAAtF7fhr2FC5tn9MYye3ZyzjmP/9611lx55ZV55jOfmTe/+c1jXvPII4/kq1/9ap7xjGeM+76LFi3Kpz71qaxatSq7du16/AUCAACt17dhb+XKZMZR3v2MGc35x2vLli350z/903zxi1/M4sWLs3jx4p8Oy3zLW96SxYsX57nPfW6e85znjNnrdywXXnhh/viP/zi/+qu/mr/7u797/EUCAACtVmqtva7hcVu6dGkdvTZdktxxxx155jOfOa7XjzUb54wZJz4bZy8dz/sHAACmt1LK9lrr0rHO9e1snEkT6O6+u5mM5c47m6GbK1dOzCycAAAAvdTXYS9pgt2VV/a6CgAAgInVt8/sAQAAjEutydq1zXYaEfYAAACOZfv2ZNWqZMeOXldyXPp+GCcAAMCY9u5tevPWrElKabYLFjT78+b1urrHpGcPAADgSDt3JvPnN+Hu+uub0Hfddc3x/PnN+SlO2OuChx56KM9//vPzvOc9L+edd17e+c53Jkle//rX5+yzz87ixYtz7rnn5t3vfvdPX3PJJZdk9DISd911V5797GcnSb785S9n+fLlPz33jne8Iy95yUuyf//+SXpHAADQZ5YsSTZsaGZ0HB5u2oaHm+ONG5vzU5ywl0z4A5ezZs3KF7/4xXz961/Prl27cvPNN+fWW29Nkrz//e/Prl27smvXrtxwww357ne/e1z3ft/73pctW7bk05/+dGbNmjUh9QIAAGNYvjy56qpmf2Cg2a5enVx2We9qOg7CXjLhD1yWUjKns1jf8PBwhoeHU0o57JqHHnooSTJ79uxx3/eDH/xgbrrppmzYsCGnnHLKhNQKAAAcw+BgcvBgsmJFsx0c7HVF49bfYW/v3uTeew9/4PLee5v2E3TgwIEsXrw4p512Wl784hfnoosuSpK85S1vyeLFi3PGGWfkNa95TU477bSfvuaKK67I4sWLs3jx4lx66aWH3W/Lli35b//tv+Wzn/3sT4MkAADQRQcOJIsWJVu3JuvXJ1u2JAsXNu3TQP+GvS4/cDkwMJBdu3Zlz549ue2223L77bcnOTSM8957780tt9ySrVu3/vQ1a9eu/ekQz5tuuumw+51zzjmptebzn//8CdUFAACM08BAsmlT0um4ybJlzfHIkM4prn/D3iQ9cPmzP/uzueSSS3LzzTcf1j5nzpxccskl2bx587juM2/evNx0001505velC996UsTUhsAANBe/Rv2kq49cHnfffflxz/+cZLkwQcfzBe+8IWce+65h13zyCOP5Ktf/Wqe8YxnjPu+ixYtyqc+9amsWrUqu3btOqEaAQCAduvvsJd05YHLe+65Jy984Qvz3Oc+NxdeeGFe/OIX/3TphJFn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\n",
+      "text/plain": [
+       "<Figure size 1080x720 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "plot_scatter_chart(df6,\"Hebbal\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "id": "3350d6bb",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Text(0, 0.5, 'count')"
+      ]
+     },
+     "execution_count": 39,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 1440x720 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "#it conclude that the majority of data points are between 0 - 10000 that means data contains the 0-10000 per sqft pricepoint.\n",
+    "import matplotlib\n",
+    "matplotlib.rcParams[\"figure.figsize\"] = (20,10)\n",
+    "plt.hist(df7.price_per_sqft,rwidth=0.9)\n",
+    "plt.xlabel('price per sqft')\n",
+    "plt.ylabel('count')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "id": "a767c610",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([ 4.,  3.,  2.,  5.,  8.,  1.,  6.,  7.,  9., 12., 16., 13.])"
+      ]
+     },
+     "execution_count": 40,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df7.bath.unique()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "id": "29f9d9a6",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>price_per_sqft</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>5277</th>\n",
+       "      <td>Neeladri Nagar</td>\n",
+       "      <td>10 BHK</td>\n",
+       "      <td>4000.0</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>160.0</td>\n",
+       "      <td>10</td>\n",
+       "      <td>4000.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8486</th>\n",
+       "      <td>other</td>\n",
+       "      <td>10 BHK</td>\n",
+       "      <td>12000.0</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>525.0</td>\n",
+       "      <td>10</td>\n",
+       "      <td>4375.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8575</th>\n",
+       "      <td>other</td>\n",
+       "      <td>16 BHK</td>\n",
+       "      <td>10000.0</td>\n",
+       "      <td>16.0</td>\n",
+       "      <td>550.0</td>\n",
+       "      <td>16</td>\n",
+       "      <td>5500.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9308</th>\n",
+       "      <td>other</td>\n",
+       "      <td>11 BHK</td>\n",
+       "      <td>6000.0</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>11</td>\n",
+       "      <td>2500.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9639</th>\n",
+       "      <td>other</td>\n",
+       "      <td>13 BHK</td>\n",
+       "      <td>5425.0</td>\n",
+       "      <td>13.0</td>\n",
+       "      <td>275.0</td>\n",
+       "      <td>13</td>\n",
+       "      <td>5069.124424</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "            location    size  total_sqft  bath  price  bhk  price_per_sqft\n",
+       "5277  Neeladri Nagar  10 BHK      4000.0  12.0  160.0   10     4000.000000\n",
+       "8486           other  10 BHK     12000.0  12.0  525.0   10     4375.000000\n",
+       "8575           other  16 BHK     10000.0  16.0  550.0   16     5500.000000\n",
+       "9308           other  11 BHK      6000.0  12.0  150.0   11     2500.000000\n",
+       "9639           other  13 BHK      5425.0  13.0  275.0   13     5069.124424"
+      ]
+     },
+     "execution_count": 41,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df7[df7.bath>10]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "id": "30525b48",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Text(0, 0.5, 'count')"
+      ]
+     },
+     "execution_count": 42,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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WAAAAAAmjl3hez8hyVOr6tuS3D/JcVX1a0k+VVUnd/dNy+VvNy/bH0hy6qb99ya5cVnfu8U6AAAAADvAys5g6u4Lu3tvd5+WjZt3v6m7n5HkyiTnLZudl+R1y/Mrk5xbVferqodl42be1yyX0d1aVWctnx73rE37AAAAALBmqzyD6VAuTnJFVT07ySeSPD1Juvu6qroiyfVJbk/y3O6+Y9nnOUkuTfKAJG9YvgAAAADYAY5KYOrutyR5y/L8T5I86RDbXZTkoi3W9yd59OomBAAAAODztepPkQMAAADgHk5gAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAAAGBEYAIAAABgRGACAAAAYERgAgAA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\n",
+      "text/plain": [
+       "<Figure size 1440x720 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "plt.hist(df7.bath, rwidth=0.7)\n",
+    "plt.xlabel('no. of bathrooms')\n",
+    "plt.ylabel('count')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 43,
+   "id": "062d4dca",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>size</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>price_per_sqft</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>1626</th>\n",
+       "      <td>Chikkabanavar</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>2460.0</td>\n",
+       "      <td>7.0</td>\n",
+       "      <td>80.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>3252.032520</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5238</th>\n",
+       "      <td>Nagasandra</td>\n",
+       "      <td>4 Bedroom</td>\n",
+       "      <td>7000.0</td>\n",
+       "      <td>8.0</td>\n",
+       "      <td>450.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>6428.571429</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6711</th>\n",
+       "      <td>Thanisandra</td>\n",
+       "      <td>3 BHK</td>\n",
+       "      <td>1806.0</td>\n",
+       "      <td>6.0</td>\n",
+       "      <td>116.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>6423.034330</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8411</th>\n",
+       "      <td>other</td>\n",
+       "      <td>6 BHK</td>\n",
+       "      <td>11338.0</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>1000.0</td>\n",
+       "      <td>6</td>\n",
+       "      <td>8819.897689</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "           location       size  total_sqft  bath   price  bhk  price_per_sqft\n",
+       "1626  Chikkabanavar  4 Bedroom      2460.0   7.0    80.0    4     3252.032520\n",
+       "5238     Nagasandra  4 Bedroom      7000.0   8.0   450.0    4     6428.571429\n",
+       "6711    Thanisandra      3 BHK      1806.0   6.0   116.0    3     6423.034330\n",
+       "8411          other      6 BHK     11338.0   9.0  1000.0    6     8819.897689"
+      ]
+     },
+     "execution_count": 43,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#to check which house having the uneven combination of bedrooms and bathrooms\n",
+    "df7[df7.bath>df7.bhk+2]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "id": "bb65c805",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(7251, 7)"
+      ]
+     },
+     "execution_count": 44,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df8 = df7[df7.bath<df7.bhk+2]\n",
+    "df8.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 45,
+   "id": "ab4fccca",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>2850.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>428.0</td>\n",
+       "      <td>4</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1630.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>194.0</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1875.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>235.0</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1235.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>148.0</td>\n",
+       "      <td>2</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              location  total_sqft  bath  price  bhk\n",
+       "0  1st Block Jayanagar      2850.0   4.0  428.0    4\n",
+       "1  1st Block Jayanagar      1630.0   3.0  194.0    3\n",
+       "2  1st Block Jayanagar      1875.0   2.0  235.0    3\n",
+       "3  1st Block Jayanagar      1200.0   2.0  130.0    3\n",
+       "4  1st Block Jayanagar      1235.0   2.0  148.0    2"
+      ]
+     },
+     "execution_count": 45,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#model building\n",
+    "df9 = df8.drop(['size','price_per_sqft'],axis='columns')\n",
+    "df9.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "id": "331eda2e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>1st Block Jayanagar</th>\n",
+       "      <th>1st Phase JP Nagar</th>\n",
+       "      <th>2nd Phase Judicial Layout</th>\n",
+       "      <th>2nd Stage Nagarbhavi</th>\n",
+       "      <th>5th Block Hbr Layout</th>\n",
+       "      <th>5th Phase JP Nagar</th>\n",
+       "      <th>6th Phase JP Nagar</th>\n",
+       "      <th>7th Phase JP Nagar</th>\n",
+       "      <th>8th Phase JP Nagar</th>\n",
+       "      <th>9th Phase JP Nagar</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Vishveshwarya Layout</th>\n",
+       "      <th>Vishwapriya Layout</th>\n",
+       "      <th>Vittasandra</th>\n",
+       "      <th>Whitefield</th>\n",
+       "      <th>Yelachenahalli</th>\n",
+       "      <th>Yelahanka</th>\n",
+       "      <th>Yelahanka New Town</th>\n",
+       "      <th>Yelenahalli</th>\n",
+       "      <th>Yeshwanthpur</th>\n",
+       "      <th>other</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 242 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   1st Block Jayanagar  1st Phase JP Nagar  2nd Phase Judicial Layout  \\\n",
+       "0                    1                   0                          0   \n",
+       "1                    1                   0                          0   \n",
+       "2                    1                   0                          0   \n",
+       "3                    1                   0                          0   \n",
+       "4                    1                   0                          0   \n",
+       "\n",
+       "   2nd Stage Nagarbhavi  5th Block Hbr Layout  5th Phase JP Nagar  \\\n",
+       "0                     0                     0                   0   \n",
+       "1                     0                     0                   0   \n",
+       "2                     0                     0                   0   \n",
+       "3                     0                     0                   0   \n",
+       "4                     0                     0                   0   \n",
+       "\n",
+       "   6th Phase JP Nagar  7th Phase JP Nagar  8th Phase JP Nagar  \\\n",
+       "0                   0                   0                   0   \n",
+       "1                   0                   0                   0   \n",
+       "2                   0                   0                   0   \n",
+       "3                   0                   0                   0   \n",
+       "4                   0                   0                   0   \n",
+       "\n",
+       "   9th Phase JP Nagar  ...  Vishveshwarya Layout  Vishwapriya Layout  \\\n",
+       "0                   0  ...                     0                   0   \n",
+       "1                   0  ...                     0                   0   \n",
+       "2                   0  ...                     0                   0   \n",
+       "3                   0  ...                     0                   0   \n",
+       "4                   0  ...                     0                   0   \n",
+       "\n",
+       "   Vittasandra  Whitefield  Yelachenahalli  Yelahanka  Yelahanka New Town  \\\n",
+       "0            0           0               0          0                   0   \n",
+       "1            0           0               0          0                   0   \n",
+       "2            0           0               0          0                   0   \n",
+       "3            0           0               0          0                   0   \n",
+       "4            0           0               0          0                   0   \n",
+       "\n",
+       "   Yelenahalli  Yeshwanthpur  other  \n",
+       "0            0             0      0  \n",
+       "1            0             0      0  \n",
+       "2            0             0      0  \n",
+       "3            0             0      0  \n",
+       "4            0             0      0  \n",
+       "\n",
+       "[5 rows x 242 columns]"
+      ]
+     },
+     "execution_count": 47,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#for model building we have to convert the text data into numeric data. \n",
+    "#for that we have to use the get_dummies function.\n",
+    "dummies=pd.get_dummies(df9.location)\n",
+    "dummies.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "id": "f5e83049",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>location</th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>1st Block Jayanagar</th>\n",
+       "      <th>1st Phase JP Nagar</th>\n",
+       "      <th>2nd Phase Judicial Layout</th>\n",
+       "      <th>2nd Stage Nagarbhavi</th>\n",
+       "      <th>5th Block Hbr Layout</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Vijayanagar</th>\n",
+       "      <th>Vishveshwarya Layout</th>\n",
+       "      <th>Vishwapriya Layout</th>\n",
+       "      <th>Vittasandra</th>\n",
+       "      <th>Whitefield</th>\n",
+       "      <th>Yelachenahalli</th>\n",
+       "      <th>Yelahanka</th>\n",
+       "      <th>Yelahanka New Town</th>\n",
+       "      <th>Yelenahalli</th>\n",
+       "      <th>Yeshwanthpur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>2850.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>428.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1630.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>194.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1875.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>235.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1st Block Jayanagar</td>\n",
+       "      <td>1235.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>148.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 246 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "              location  total_sqft  bath  price  bhk  1st Block Jayanagar  \\\n",
+       "0  1st Block Jayanagar      2850.0   4.0  428.0    4                    1   \n",
+       "1  1st Block Jayanagar      1630.0   3.0  194.0    3                    1   \n",
+       "2  1st Block Jayanagar      1875.0   2.0  235.0    3                    1   \n",
+       "3  1st Block Jayanagar      1200.0   2.0  130.0    3                    1   \n",
+       "4  1st Block Jayanagar      1235.0   2.0  148.0    2                    1   \n",
+       "\n",
+       "   1st Phase JP Nagar  2nd Phase Judicial Layout  2nd Stage Nagarbhavi  \\\n",
+       "0                   0                          0                     0   \n",
+       "1                   0                          0                     0   \n",
+       "2                   0                          0                     0   \n",
+       "3                   0                          0                     0   \n",
+       "4                   0                          0                     0   \n",
+       "\n",
+       "   5th Block Hbr Layout  ...  Vijayanagar  Vishveshwarya Layout  \\\n",
+       "0                     0  ...            0                     0   \n",
+       "1                     0  ...            0                     0   \n",
+       "2                     0  ...            0                     0   \n",
+       "3                     0  ...            0                     0   \n",
+       "4                     0  ...            0                     0   \n",
+       "\n",
+       "   Vishwapriya Layout  Vittasandra  Whitefield  Yelachenahalli  Yelahanka  \\\n",
+       "0                   0            0           0               0          0   \n",
+       "1                   0            0           0               0          0   \n",
+       "2                   0            0           0               0          0   \n",
+       "3                   0            0           0               0          0   \n",
+       "4                   0            0           0               0          0   \n",
+       "\n",
+       "   Yelahanka New Town  Yelenahalli  Yeshwanthpur  \n",
+       "0                   0            0             0  \n",
+       "1                   0            0             0  \n",
+       "2                   0            0             0  \n",
+       "3                   0            0             0  \n",
+       "4                   0            0             0  \n",
+       "\n",
+       "[5 rows x 246 columns]"
+      ]
+     },
+     "execution_count": 49,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df10 = pd.concat([df9,dummies.drop('other',axis='columns')],axis='columns')\n",
+    "df10.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 51,
+   "id": "220dfde7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>price</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>1st Block Jayanagar</th>\n",
+       "      <th>1st Phase JP Nagar</th>\n",
+       "      <th>2nd Phase Judicial Layout</th>\n",
+       "      <th>2nd Stage Nagarbhavi</th>\n",
+       "      <th>5th Block Hbr Layout</th>\n",
+       "      <th>5th Phase JP Nagar</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Vijayanagar</th>\n",
+       "      <th>Vishveshwarya Layout</th>\n",
+       "      <th>Vishwapriya Layout</th>\n",
+       "      <th>Vittasandra</th>\n",
+       "      <th>Whitefield</th>\n",
+       "      <th>Yelachenahalli</th>\n",
+       "      <th>Yelahanka</th>\n",
+       "      <th>Yelahanka New Town</th>\n",
+       "      <th>Yelenahalli</th>\n",
+       "      <th>Yeshwanthpur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>2850.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>428.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1630.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>194.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1875.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>235.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1235.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>148.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 245 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   total_sqft  bath  price  bhk  1st Block Jayanagar  1st Phase JP Nagar  \\\n",
+       "0      2850.0   4.0  428.0    4                    1                   0   \n",
+       "1      1630.0   3.0  194.0    3                    1                   0   \n",
+       "2      1875.0   2.0  235.0    3                    1                   0   \n",
+       "3      1200.0   2.0  130.0    3                    1                   0   \n",
+       "4      1235.0   2.0  148.0    2                    1                   0   \n",
+       "\n",
+       "   2nd Phase Judicial Layout  2nd Stage Nagarbhavi  5th Block Hbr Layout  \\\n",
+       "0                          0                     0                     0   \n",
+       "1                          0                     0                     0   \n",
+       "2                          0                     0                     0   \n",
+       "3                          0                     0                     0   \n",
+       "4                          0                     0                     0   \n",
+       "\n",
+       "   5th Phase JP Nagar  ...  Vijayanagar  Vishveshwarya Layout  \\\n",
+       "0                   0  ...            0                     0   \n",
+       "1                   0  ...            0                     0   \n",
+       "2                   0  ...            0                     0   \n",
+       "3                   0  ...            0                     0   \n",
+       "4                   0  ...            0                     0   \n",
+       "\n",
+       "   Vishwapriya Layout  Vittasandra  Whitefield  Yelachenahalli  Yelahanka  \\\n",
+       "0                   0            0           0               0          0   \n",
+       "1                   0            0           0               0          0   \n",
+       "2                   0            0           0               0          0   \n",
+       "3                   0            0           0               0          0   \n",
+       "4                   0            0           0               0          0   \n",
+       "\n",
+       "   Yelahanka New Town  Yelenahalli  Yeshwanthpur  \n",
+       "0                   0            0             0  \n",
+       "1                   0            0             0  \n",
+       "2                   0            0             0  \n",
+       "3                   0            0             0  \n",
+       "4                   0            0             0  \n",
+       "\n",
+       "[5 rows x 245 columns]"
+      ]
+     },
+     "execution_count": 51,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df11 = df10.drop('location',axis='columns')\n",
+    "df11.head()\n",
+    "#this shows how long over data processing pipeline has become(all the data framnes are the stages in the pipeline)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9f1453b7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#now for the data training /modelling process we have to make the dependent and independent variables seperately.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 102,
+   "id": "193a5c5d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>total_sqft</th>\n",
+       "      <th>bath</th>\n",
+       "      <th>bhk</th>\n",
+       "      <th>1st Block Jayanagar</th>\n",
+       "      <th>1st Phase JP Nagar</th>\n",
+       "      <th>2nd Phase Judicial Layout</th>\n",
+       "      <th>2nd Stage Nagarbhavi</th>\n",
+       "      <th>5th Block Hbr Layout</th>\n",
+       "      <th>5th Phase JP Nagar</th>\n",
+       "      <th>6th Phase JP Nagar</th>\n",
+       "      <th>...</th>\n",
+       "      <th>Vijayanagar</th>\n",
+       "      <th>Vishveshwarya Layout</th>\n",
+       "      <th>Vishwapriya Layout</th>\n",
+       "      <th>Vittasandra</th>\n",
+       "      <th>Whitefield</th>\n",
+       "      <th>Yelachenahalli</th>\n",
+       "      <th>Yelahanka</th>\n",
+       "      <th>Yelahanka New Town</th>\n",
+       "      <th>Yelenahalli</th>\n",
+       "      <th>Yeshwanthpur</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>2850.0</td>\n",
+       "      <td>4.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1630.0</td>\n",
+       "      <td>3.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1875.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1200.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>3</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1235.0</td>\n",
+       "      <td>2.0</td>\n",
+       "      <td>2</td>\n",
+       "      <td>1</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>...</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>5 rows × 244 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   total_sqft  bath  bhk  1st Block Jayanagar  1st Phase JP Nagar  \\\n",
+       "0      2850.0   4.0    4                    1                   0   \n",
+       "1      1630.0   3.0    3                    1                   0   \n",
+       "2      1875.0   2.0    3                    1                   0   \n",
+       "3      1200.0   2.0    3                    1                   0   \n",
+       "4      1235.0   2.0    2                    1                   0   \n",
+       "\n",
+       "   2nd Phase Judicial Layout  2nd Stage Nagarbhavi  5th Block Hbr Layout  \\\n",
+       "0                          0                     0                     0   \n",
+       "1                          0                     0                     0   \n",
+       "2                          0                     0                     0   \n",
+       "3                          0                     0                     0   \n",
+       "4                          0                     0                     0   \n",
+       "\n",
+       "   5th Phase JP Nagar  6th Phase JP Nagar  ...  Vijayanagar  \\\n",
+       "0                   0                   0  ...            0   \n",
+       "1                   0                   0  ...            0   \n",
+       "2                   0                   0  ...            0   \n",
+       "3                   0                   0  ...            0   \n",
+       "4                   0                   0  ...            0   \n",
+       "\n",
+       "   Vishveshwarya Layout  Vishwapriya Layout  Vittasandra  Whitefield  \\\n",
+       "0                     0                   0            0           0   \n",
+       "1                     0                   0            0           0   \n",
+       "2                     0                   0            0           0   \n",
+       "3                     0                   0            0           0   \n",
+       "4                     0                   0            0           0   \n",
+       "\n",
+       "   Yelachenahalli  Yelahanka  Yelahanka New Town  Yelenahalli  Yeshwanthpur  \n",
+       "0               0          0                   0            0             0  \n",
+       "1               0          0                   0            0             0  \n",
+       "2               0          0                   0            0             0  \n",
+       "3               0          0                   0            0             0  \n",
+       "4               0          0                   0            0             0  \n",
+       "\n",
+       "[5 rows x 244 columns]"
+      ]
+     },
+     "execution_count": 102,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x = df11.drop('price',axis='columns')\n",
+    "x.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "id": "4b237f0e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0    428.0\n",
+       "1    194.0\n",
+       "2    235.0\n",
+       "3    130.0\n",
+       "4    148.0\n",
+       "Name: price, dtype: float64"
+      ]
+     },
+     "execution_count": 56,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "y = df11.price\n",
+    "y.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "26f45d02",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#create train and test data sets for the training nad testing the data.\n",
+    "#for that we have to use the train test split method \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "id": "5a092eb4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.model_selection import train_test_split\n",
+    "x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "id": "5d9ac838",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.8452277697874312"
+      ]
+     },
+     "execution_count": 61,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#fit the model and get the score for knowing the accuracy.\n",
+    "#lr_clf= linear classifier\n",
+    "from sklearn.linear_model import LinearRegression\n",
+    "lr_clf =LinearRegression()\n",
+    "lr_clf.fit(x_train,y_train)\n",
+    "lr_clf.score(x_test,y_test)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "id": "4126e52f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([0.82430186, 0.77166234, 0.85089567, 0.80837764, 0.83653286])"
+      ]
+     },
+     "execution_count": 66,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#just use the shufflesplit which can randomize the sample that means each of the fold have equal distribution of dat samples that means data does not target only one area.\n",
+    "#from result we can conclude that there are only one result less than 80 percent accuracy\n",
+    "from sklearn.model_selection import ShuffleSplit\n",
+    "from sklearn.model_selection import cross_val_score\n",
+    "cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=0)\n",
+    "cross_val_score(LinearRegression(), x,y, cv=cv)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "29c493b7",
+   "metadata": {},
+   "source": [
+    "#\n",
+    "for linear regression we can see that all the results are more than 80% accuracy and as a data scientist i have to check all other regression techniques for the best score\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "id": "93845704",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:141: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2.\n",
+      "If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:\n",
+      "\n",
+      "from sklearn.pipeline import make_pipeline\n",
+      "\n",
+      "model = make_pipeline(StandardScaler(with_mean=False), LinearRegression())\n",
+      "\n",
+      "If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:\n",
+      "\n",
+      "kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}\n",
+      "model.fit(X, y, **kwargs)\n",
+      "\n",
+      "\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:141: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2.\n",
+      "If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:\n",
+      "\n",
+      "from sklearn.pipeline import make_pipeline\n",
+      "\n",
+      "model = make_pipeline(StandardScaler(with_mean=False), LinearRegression())\n",
+      "\n",
+      "If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:\n",
+      "\n",
+      "kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}\n",
+      "model.fit(X, y, **kwargs)\n",
+      "\n",
+      "\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:141: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2.\n",
+      "If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:\n",
+      "\n",
+      "from sklearn.pipeline import make_pipeline\n",
+      "\n",
+      "model = make_pipeline(StandardScaler(with_mean=False), LinearRegression())\n",
+      "\n",
+      "If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:\n",
+      "\n",
+      "kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}\n",
+      "model.fit(X, y, **kwargs)\n",
+      "\n",
+      "\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:141: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2.\n",
+      "If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:\n",
+      "\n",
+      "from sklearn.pipeline import make_pipeline\n",
+      "\n",
+      "model = make_pipeline(StandardScaler(with_mean=False), LinearRegression())\n",
+      "\n",
+      "If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:\n",
+      "\n",
+      "kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}\n",
+      "model.fit(X, y, **kwargs)\n",
+      "\n",
+      "\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:141: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2.\n",
+      "If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:\n",
+      "\n",
+      "from sklearn.pipeline import make_pipeline\n",
+      "\n",
+      "model = make_pipeline(StandardScaler(with_mean=False), LinearRegression())\n",
+      "\n",
+      "If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:\n",
+      "\n",
+      "kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}\n",
+      "model.fit(X, y, **kwargs)\n",
+      "\n",
+      "\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:148: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2. Please leave the normalize parameter to its default value to silence this warning. The default behavior of this estimator is to not do any normalization. If normalization is needed please use sklearn.preprocessing.StandardScaler instead.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:148: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2. Please leave the normalize parameter to its default value to silence this warning. The default behavior of this estimator is to not do any normalization. If normalization is needed please use sklearn.preprocessing.StandardScaler instead.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:148: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2. Please leave the normalize parameter to its default value to silence this warning. The default behavior of this estimator is to not do any normalization. If normalization is needed please use sklearn.preprocessing.StandardScaler instead.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:148: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2. Please leave the normalize parameter to its default value to silence this warning. The default behavior of this estimator is to not do any normalization. If normalization is needed please use sklearn.preprocessing.StandardScaler instead.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:148: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2. Please leave the normalize parameter to its default value to silence this warning. The default behavior of this estimator is to not do any normalization. If normalization is needed please use sklearn.preprocessing.StandardScaler instead.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\linear_model\\_base.py:141: FutureWarning: 'normalize' was deprecated in version 1.0 and will be removed in 1.2.\n",
+      "If you wish to scale the data, use Pipeline with a StandardScaler in a preprocessing stage. To reproduce the previous behavior:\n",
+      "\n",
+      "from sklearn.pipeline import make_pipeline\n",
+      "\n",
+      "model = make_pipeline(StandardScaler(with_mean=False), LinearRegression())\n",
+      "\n",
+      "If you wish to pass a sample_weight parameter, you need to pass it as a fit parameter to each step of the pipeline as follows:\n",
+      "\n",
+      "kwargs = {s[0] + '__sample_weight': sample_weight for s in model.steps}\n",
+      "model.fit(X, y, **kwargs)\n",
+      "\n",
+      "\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n",
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\tree\\_classes.py:359: FutureWarning: Criterion 'mse' was deprecated in v1.0 and will be removed in version 1.2. Use `criterion='squared_error'` which is equivalent.\n",
+      "  warnings.warn(\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>model</th>\n",
+       "      <th>best_score</th>\n",
+       "      <th>best_params</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>linear_regression</td>\n",
+       "      <td>0.818354</td>\n",
+       "      <td>{'normalize': True}</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>lasso</td>\n",
+       "      <td>0.687478</td>\n",
+       "      <td>{'alpha': 2, 'selection': 'random'}</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>decision_tree</td>\n",
+       "      <td>0.718771</td>\n",
+       "      <td>{'criterion': 'mse', 'splitter': 'best'}</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "               model  best_score                               best_params\n",
+       "0  linear_regression    0.818354                       {'normalize': True}\n",
+       "1              lasso    0.687478       {'alpha': 2, 'selection': 'random'}\n",
+       "2      decision_tree    0.718771  {'criterion': 'mse', 'splitter': 'best'}"
+      ]
+     },
+     "execution_count": 76,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#for that we can use the \"GridSearchCV\"\n",
+    "#we can check the results for linear regresssion, lesso, decisiontreeregressor\n",
+    "#this is called hyper parameter tunning\n",
+    "#going through the ictionary whihc i create and initializing gridsearchcv wit this model which has parameters\n",
+    "#for cross validation we can use cv object then call the fit method\n",
+    "#then\n",
+    "from sklearn.model_selection import GridSearchCV\n",
+    "\n",
+    "from sklearn.linear_model import Lasso\n",
+    "from sklearn.tree import DecisionTreeRegressor\n",
+    "\n",
+    "def find_best_model_using_gridsearchcv(x,y):\n",
+    "    algos = {\n",
+    "        'linear_regression' : {\n",
+    "            'model': LinearRegression(),\n",
+    "            'params':{\n",
+    "                'normalize':[True, False]\n",
+    "            }\n",
+    "        },\n",
+    "        'lasso':{\n",
+    "            'model': Lasso(),\n",
+    "            'params':{\n",
+    "                'alpha':[1,2],\n",
+    "                'selection':['random','cyclic']\n",
+    "            }\n",
+    "        },\n",
+    "        'decision_tree':{\n",
+    "            'model': DecisionTreeRegressor(),\n",
+    "            'params':{\n",
+    "                'criterion':['mse','friedman_mse'],\n",
+    "                'splitter':['best','random']\n",
+    "            }\n",
+    "        }\n",
+    "    }\n",
+    "    scores = []\n",
+    "    cv = ShuffleSplit(n_splits=5, test_size=0.2, random_state=0)\n",
+    "    for algo_name, config in algos.items():\n",
+    "        gs = GridSearchCV(config['model'], config['params'], cv=cv, return_train_score=False)\n",
+    "        gs.fit(x,y)\n",
+    "        scores.append({\n",
+    "            'model':algo_name,\n",
+    "            'best_score': gs.best_score_,\n",
+    "            'best_params': gs.best_params_\n",
+    "        })\n",
+    "    return pd.DataFrame(scores,columns=['model','best_score','best_params'])\n",
+    "\n",
+    "find_best_model_using_gridsearchcv(x,y)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 77,
+   "id": "fe8adfb1",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Index(['total_sqft', 'bath', 'bhk', '1st Block Jayanagar',\n",
+       "       '1st Phase JP Nagar', '2nd Phase Judicial Layout',\n",
+       "       '2nd Stage Nagarbhavi', '5th Block Hbr Layout', '5th Phase JP Nagar',\n",
+       "       '6th Phase JP Nagar',\n",
+       "       ...\n",
+       "       'Vijayanagar', 'Vishveshwarya Layout', 'Vishwapriya Layout',\n",
+       "       'Vittasandra', 'Whitefield', 'Yelachenahalli', 'Yelahanka',\n",
+       "       'Yelahanka New Town', 'Yelenahalli', 'Yeshwanthpur'],\n",
+       "      dtype='object', length=244)"
+      ]
+     },
+     "execution_count": 77,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "x.columns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 106,
+   "id": "634bff97",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "238"
+      ]
+     },
+     "execution_count": 106,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#JSUT TO CHECK, FUCTION IS WORKING OR NOT \n",
+    "np.where(x.columns=='Whitefield')[0][0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 107,
+   "id": "e75b06c0",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def predict_price(location,sqft,bath,bhk):\n",
+    "    loc_index = np.where(x.columns==location)[0][0]\n",
+    "    \n",
+    "    X = np.zeros(len(x.columns))\n",
+    "    X[0]= sqft\n",
+    "    X[1]= bath\n",
+    "    X[2]= bhk\n",
+    "    if loc_index >= 0:\n",
+    "        X[loc_index] = 1\n",
+    "    return lr_clf.predict([X])[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 111,
+   "id": "e173d42f",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\base.py:450: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names\n",
+      "  warnings.warn(\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "83.49904677179237"
+      ]
+     },
+     "execution_count": 111,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "predict_price('1st Phase JP Nagar', 1000, 2, 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 117,
+   "id": "2cf22156",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\base.py:450: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names\n",
+      "  warnings.warn(\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "86.80519395205847"
+      ]
+     },
+     "execution_count": 117,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "predict_price('1st Phase JP Nagar', 1000, 3, 3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "7158635a",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'predict_price' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "Input \u001b[1;32mIn [1]\u001b[0m, in \u001b[0;36m<cell line: 1>\u001b[1;34m()\u001b[0m\n\u001b[1;32m----> 1\u001b[0m \u001b[43mpredict_price\u001b[49m(\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mIndira Nagar\u001b[39m\u001b[38;5;124m'\u001b[39m, \u001b[38;5;241m1000\u001b[39m, \u001b[38;5;241m2\u001b[39m, \u001b[38;5;241m2\u001b[39m)\n",
+      "\u001b[1;31mNameError\u001b[0m: name 'predict_price' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "predict_price('Indira Nagar', 1000, 2, 2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 123,
+   "id": "e7306f47",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\prana\\anaconda3\\lib\\site-packages\\sklearn\\base.py:450: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names\n",
+      "  warnings.warn(\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "184.58430202033463"
+      ]
+     },
+     "execution_count": 123,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "predict_price('Indira Nagar', 1000, 3, 3)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "443e5aa2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#model building is done "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "f460fd2a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#now export the file with pickel file"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "id": "18430ea9",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pickle\n",
+    "with open('house price prediction in banglore.pickle','wb')as f:\n",
+    "    pickle.dump(lr_clf,f)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 122,
+   "id": "4aea9bda",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#other than the model we aslo need column information so we have to import the json\n",
+    "#columns are import for prediction\n",
+    "import json\n",
+    "columns = {\n",
+    "    'data columns':[col.lower() for col in x.columns]\n",
+    "}\n",
+    "with open(\"columns.json\",\"w\") as f:\n",
+    "    f.write(json.dumps(columns))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "df24b715",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "5fd6b167",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "09e2705f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fad18073",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "c90ea502",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "407adf05",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "ba69ede0",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
